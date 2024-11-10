@@ -1,0 +1,110 @@
+<div>
+  Recipe Form
+  <.form :let={form} id="lala" for={@form} phx-submit="save" phx-change="validate">
+    <.input field={@form[:title]} placeholder="Title" />
+    <.input field={@form[:description]} placeholder="Description" />
+    <.input field={@form[:serve_time]} placeholder="Serve Time" type="number" />
+    <.input
+      field={@form[:nutrition_facts]}
+      name="recipe[nutrition_facts][]"
+      placeholder="Nutrition Facts"
+    />
+    <.input field={@form[:is_published]} type="checkbox" placeholder="Is Published" />
+    <.input
+      field={@form[:recipe_category_id]}
+      type="select"
+      options={[{"Breakfast", 1}, {"Lunch", 2}, {"Dinner", 3}]}
+    />
+    <h1 class="mt-20">Recipe Images</h1>
+    <.inputs_for :let={recipe_image} field={form[:recipe_images]}>
+      <.input type="text" field={recipe_image[:image_url]} />
+      <.input type="checkbox" field={recipe_image[:is_primary]} />
+      <button
+        type="button"
+        value={recipe_image.index}
+        phx-click="remove-nested"
+        phx-value-field-name="recipe_images"
+      >
+        <.icon name="hero-x-mark" class="w-6 h-6 relative top-2" />
+      </button>
+    </.inputs_for>
+    <button
+      type="button"
+      phx-click="add-nested"
+      phx-value-field-name="recipe_images"
+      class="mt-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-700"
+    >
+      Add Recipe Image
+    </button>
+
+    <h1 class="mt-20">Recipe Cooking Steps</h1>
+    <.inputs_for :let={cs} field={form[:cooking_steps]}>
+      <.input type="number" field={cs[:step_number]} />
+      <.input type="text" field={cs[:instruction]} />
+      <.input type="text" field={cs[:step_image_url]} />
+      <button
+        type="button"
+        value={cs.index}
+        phx-click="remove-nested"
+        phx-value-field-name="cooking_steps"
+      >
+        <.icon name="hero-x-mark" class="w-6 h-6 relative top-2" />
+      </button>
+    </.inputs_for>
+    <button
+      type="button"
+      phx-click="add-nested"
+      phx-value-field-name="cooking_steps"
+      class="mt-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-700"
+    >
+      Add Recipe Cooking Step
+    </button>
+    <h1 class="mt-20">Recipe Tags</h1>
+    <.inputs_for :let={tag} field={form[:tags]}>
+      <.input type="text" field={tag[:name]} />
+      <button
+        type="button"
+        value={tag.index}
+        phx-click="remove-nested"
+        phx-value-field-name="tags"
+      >
+        <.icon name="hero-x-mark" class="w-6 h-6 relative top-2" />
+      </button>
+    </.inputs_for>
+    <button
+      type="button"
+      phx-click="add-nested"
+      phx-value-field-name="tags"
+      class="mt-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-700"
+    >
+      Add Recipe Tag
+    </button>
+
+    <h1 class="mt-20">Recipe Ingredients</h1>
+    <.inputs_for :let={ingredient} field={form[:ingredients]}>
+      <.input type="text" field={ingredient[:name]} />
+      <.input type="text" field={ingredient[:image_url]} />
+      <.input type="checkbox" field={ingredient[:is_primary]} />
+      <button
+        type="button"
+        value={ingredient.index}
+        phx-click="remove-nested"
+        phx-value-field-name="ingredients"
+      >
+        <.icon name="hero-x-mark" class="w-6 h-6 relative top-2" />
+      </button>
+    </.inputs_for>
+    <button
+      type="button"
+      phx-click="add-nested"
+      phx-value-field-name="ingredients"
+      class="mt-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-700"
+    >
+      Add Recipe Ingredient
+    </button>
+
+    <button type="submit" class="mt-20 px-4 py-2 text-sm text-blue-600 hover:text-blue-700">
+      Submit
+    </button>
+  </.form>
+</div>

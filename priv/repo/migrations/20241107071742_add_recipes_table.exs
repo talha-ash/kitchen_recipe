@@ -12,12 +12,12 @@ defmodule KitchenRecipe.Repo.Migrations.AddRecipesTable do
       add(:video_url, :string)
       add(:video_title, :string)
       add :user_id, references(:users, on_delete: :restrict), null: false
-      add :category_id, references(:recipe_categories, on_delete: :restrict), null: false
+      add :recipe_category_id, references(:recipe_categories, on_delete: :restrict), null: false
 
       timestamps(type: :utc_datetime)
     end
 
     create index(:recipes, [:user_id])
-    create index(:recipes, [:category_id])
+    create index(:recipes, [:recipe_category_id])
   end
 end

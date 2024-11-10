@@ -1,6 +1,8 @@
 defmodule KitchenRecipe.Recipes.Recipe do
   use Ecto.Schema
   import Ecto.Changeset
+  require Ecto.Query
+  alias KitchenRecipe.Recipes.CookingStep
 
   alias KitchenRecipe.Recipes.{
     RecipeIngredient,
@@ -8,7 +10,9 @@ defmodule KitchenRecipe.Recipes.Recipe do
     RecipeCategory,
     Tag,
     RecipeTag,
-    RecipeLike
+    RecipeLike,
+    RecipeImage,
+    CookingStep
   }
 
   alias KitchenRecipe.Accounts.User
@@ -26,13 +30,18 @@ defmodule KitchenRecipe.Recipes.Recipe do
     belongs_to :user, User
     belongs_to :recipe_category, RecipeCategory
 
-    has_many :recipe_likes, RecipeLike
+    has_many :recipe_likes, RecipeLike, on_replace: :delete
+    has_many :recipe_images, RecipeImage, on_replace: :delete
+    has_many :cooking_steps, CookingStep, on_replace: :delete
+
+    # has_many :recipe_tags, RecipeTag
+    # has_many :tags, through: [:recipe_tags, :tag]
 
     many_to_many :ingredients, Ingredient,
       join_through: RecipeIngredient,
       on_replace: :delete
 
-    many_to_many :tags, Tag, join_through: RecipeTag
+    many_to_many :tags, Tag, join_through: RecipeTag, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
@@ -40,8 +49,26 @@ defmodule KitchenRecipe.Recipes.Recipe do
   @doc false
   def changeset(recipe, attrs) do
     recipe
-    |> cast(attrs, [:name, :description, :image_url, :is_verified])
-    |> validate_required([:name, :image_url])
-    |> unique_constraint(:name)
+    |> cast(attrs, [:title, :serve_time, :nutrition_facts, :user_id, :recipe_category_id])
+    |> validate_required([:title, :serve_time, :nutrition_facts, :user_id, :recipe_category_id])
+    |> cast_assoc(:recipe_images)
+  end
+
+  def associated_changeset(recipe, attrs) do
+    recipe
+    |> cast(attrs, [:title, :serve_time, :nutrition_facts, :user_id, :recipe_category_id])
+    |> Tag.put_assoc_with_recipe(attrs)
+    |> Ingredient.put_assoc_with_recipe(attrs)
+    |> CookingStep.cast_assoc_with_recipe()
+    |> RecipeImage.cast_assoc_with_recipe()
+  end
+
+  def associated_changeset(attrs) do
+    %__MODULE__{}
+    |> cast(attrs, [:title, :serve_time, :nutrition_facts, :user_id, :recipe_category_id])
+    |> Tag.put_assoc_with_recipe(attrs)
+    |> Ingredient.put_assoc_with_recipe(attrs)
+    |> CookingStep.cast_assoc_with_recipe()
+    |> RecipeImage.cast_assoc_with_recipe()
   end
 end

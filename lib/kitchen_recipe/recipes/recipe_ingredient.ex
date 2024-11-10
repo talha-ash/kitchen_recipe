@@ -4,8 +4,8 @@ defmodule KitchenRecipe.Recipes.RecipeIngredient do
   alias KitchenRecipe.Recipes.{Recipe, Ingredient}
 
   schema "recipe_ingredients" do
-    belongs_to :recipe, Recipe
-    belongs_to :ingredient, Ingredient
+    belongs_to :recipe, Recipe, on_replace: :delete
+    belongs_to :ingredient, Ingredient, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end

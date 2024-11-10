@@ -20,7 +20,7 @@ defmodule KitchenRecipeWeb.Router do
   scope "/", KitchenRecipeWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", RecipeCrudLive, :new
   end
 
   # Other scopes may use custom stacks.
