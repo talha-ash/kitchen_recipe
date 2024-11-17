@@ -17,12 +17,6 @@ defmodule KitchenRecipeWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", KitchenRecipeWeb do
-    pipe_through :browser
-
-    live "/", RecipeCrudLive, :new
-  end
-
   # Other scopes may use custom stacks.
   # scope "/api", KitchenRecipeWeb do
   #   pipe_through :api
@@ -51,7 +45,9 @@ defmodule KitchenRecipeWeb.Router do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     live_session :redirect_if_user_is_authenticated,
+      layout: {KitchenRecipeWeb.Layouts, :auth},
       on_mount: [{KitchenRecipeWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      live "/", LandingPageLive, :new
       live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
@@ -66,6 +62,7 @@ defmodule KitchenRecipeWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{KitchenRecipeWeb.UserAuth, :ensure_authenticated}] do
+      live "/feed", FeedLive
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end

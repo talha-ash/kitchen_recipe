@@ -20,24 +20,13 @@ defmodule KitchenRecipe.Recipes.CookingStep do
     |> unique_constraint([:recipe_id, :step_number])
   end
 
-  def new_changeset(%__MODULE__{} = cooking_step, attrs, %{recipe_id: recipe_id}) do
-    Map.put(cooking_step, :scope_id, recipe_id)
-    |> cast(attrs, [:step_number, :instruction, :step_image_url])
-    |> validate_required([:step_number, :instruction])
-  end
-
   def new_changeset(%__MODULE__{} = cooking_step, attrs) do
     cooking_step
     |> cast(attrs, [:step_number, :instruction, :step_image_url])
     |> validate_required([:step_number, :instruction])
-  end
-
-  def cast_assoc_with_recipe(changeset, recipe_id) do
-    changeset
-    |> cast_assoc(
-      :cooking_steps,
-      required: true,
-      with: {__MODULE__, :new_changeset, [%{recipe_id: recipe_id}]}
+    |> unique_constraint([:recipe_id, :step_number],
+      error_key: :step_number,
+      message: "Step number already exists for this recipe"
     )
   end
 
@@ -46,7 +35,7 @@ defmodule KitchenRecipe.Recipes.CookingStep do
     |> cast_assoc(
       :cooking_steps,
       required: true,
-      with: {__MODULE__, :new_changeset, []}
+      with: &new_changeset/2
     )
   end
 end

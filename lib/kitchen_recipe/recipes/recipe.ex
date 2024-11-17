@@ -46,28 +46,53 @@ defmodule KitchenRecipe.Recipes.Recipe do
     timestamps(type: :utc_datetime)
   end
 
+  @recipe_cast_fields ~w(title serve_time description nutrition_facts user_id recipe_category_id)a
+  @recipe_required_fields ~w(title serve_time nutrition_facts user_id recipe_category_id)a
+
   @doc false
   def changeset(recipe, attrs) do
     recipe
-    |> cast(attrs, [:title, :serve_time, :nutrition_facts, :user_id, :recipe_category_id])
-    |> validate_required([:title, :serve_time, :nutrition_facts, :user_id, :recipe_category_id])
+    |> cast(attrs, @recipe_cast_fields)
+    |> validate_required(@recipe_required_fields)
     |> cast_assoc(:recipe_images)
   end
 
-  def associated_changeset(recipe, attrs) do
+  def update_changeset(recipe, attrs) do
     recipe
-    |> cast(attrs, [:title, :serve_time, :nutrition_facts, :user_id, :recipe_category_id])
+    |> cast(attrs, @recipe_cast_fields)
+    |> validate_required(@recipe_required_fields)
+    |> validate_length(:nutrition_facts, min: 1)
     |> Tag.put_assoc_with_recipe(attrs)
     |> Ingredient.put_assoc_with_recipe(attrs)
     |> CookingStep.cast_assoc_with_recipe()
     |> RecipeImage.cast_assoc_with_recipe()
   end
 
-  def associated_changeset(attrs) do
+  def create_changeset(attrs) do
     %__MODULE__{}
-    |> cast(attrs, [:title, :serve_time, :nutrition_facts, :user_id, :recipe_category_id])
+    |> cast(attrs, @recipe_cast_fields)
+    |> validate_required(@recipe_required_fields)
+    |> validate_length(:nutrition_facts, min: 1)
     |> Tag.put_assoc_with_recipe(attrs)
     |> Ingredient.put_assoc_with_recipe(attrs)
+    |> CookingStep.cast_assoc_with_recipe()
+    |> RecipeImage.cast_assoc_with_recipe()
+  end
+
+  def validate_changeset(recipe, attrs) do
+    recipe
+    |> cast(attrs, @recipe_cast_fields)
+    |> validate_required(@recipe_required_fields)
+    |> validate_length(:nutrition_facts, min: 1)
+    |> CookingStep.cast_assoc_with_recipe()
+    |> RecipeImage.cast_assoc_with_recipe()
+  end
+
+  def validate_changeset(attrs) do
+    %__MODULE__{}
+    |> cast(attrs, @recipe_cast_fields)
+    |> validate_required(@recipe_required_fields)
+    |> validate_length(:nutrition_facts, min: 1)
     |> CookingStep.cast_assoc_with_recipe()
     |> RecipeImage.cast_assoc_with_recipe()
   end

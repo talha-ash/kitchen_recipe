@@ -86,7 +86,7 @@ defmodule KitchenRecipeWeb do
       # Core UI components and translation
       import KitchenRecipeWeb.CoreComponents
       import KitchenRecipeWeb.Gettext
-
+      import Phoenix.LiveView.Components.MultiSelect
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
 

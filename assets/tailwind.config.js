@@ -5,15 +5,18 @@ const plugin = require("tailwindcss/plugin")
 const fs = require("fs")
 const path = require("path")
 
+const colors = require("tailwindcss/colors")
 module.exports = {
   content: [
     "./js/**/*.js",
     "../lib/kitchen_recipe_web.ex",
-    "../lib/kitchen_recipe_web/**/*.*ex"
+    "../lib/kitchen_recipe_web/**/*.*ex",
+    "../deps/phoenix_multi_select/lib/*.ex",
   ],
   theme: {
     extend: {
       colors: {
+                  primary: colors.blue,
         brand: "#FD4F00",
       }
     },

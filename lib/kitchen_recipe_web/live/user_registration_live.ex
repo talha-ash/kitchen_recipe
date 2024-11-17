@@ -6,38 +6,51 @@ defmodule KitchenRecipeWeb.UserRegistrationLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        Register for an account
-        <:subtitle>
-          Already registered?
-          <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-            Log in
-          </.link>
-          to your account now.
-        </:subtitle>
-      </.header>
-
-      <.simple_form
-        for={@form}
-        id="registration_form"
-        phx-submit="save"
-        phx-change="validate"
-        phx-trigger-action={@trigger_submit}
-        action={~p"/users/log_in?_action=registered"}
-        method="post"
-      >
-        <.error :if={@check_errors}>
-          Oops, something went wrong! Please check the errors below.
-        </.error>
-
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
-
-        <:actions>
-          <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
-        </:actions>
-      </.simple_form>
+    <div class="signup-form-wrapper">
+      <div class="signup-form-content">
+        <h2>Start from Scratch</h2>
+        <p>Create account to continue.</p>
+        <.simple_form
+          for={@form}
+          id="registration_form"
+          phx-submit="save"
+          phx-change="validate"
+          phx-trigger-action={@trigger_submit}
+          action={~p"/users/log_in?_action=registered"}
+          method="post"
+        >
+          <.error :if={@check_errors}>
+            Oops, something went wrong! Please check the errors below.
+          </.error>
+          <div class="form-text-box">
+            <label for="">Full Name</label>
+            <.input field={@form[:fullname]} type="text" required placeholder="Nick Evans" />
+          </div>
+          <div class="form-text-box">
+            <label for="">Username</label>
+            <.input field={@form[:username]} type="text" required placeholder="nick_evans" />
+          </div>
+          <div class="form-text-box">
+            <label for="">Email address</label>
+            <.input field={@form[:email]} type="email" required placeholder="user@email.com" />
+          </div>
+          <div class="form-text-box">
+            <label for="">Password</label>
+            <.input field={@form[:password]} type="password" required placeholder="*****" />
+          </div>
+          <div class="btn-wrapper">
+            <.button phx-disable-with="Creating account...">Sign Up</.button>
+          </div>
+        </.simple_form>
+        <div class="sign-up-content">
+          <span>Already have an account?</span>
+          <h4>
+            <.link navigate={~p"/users/log_in"}>
+              Login Here
+            </.link>
+          </h4>
+        </div>
+      </div>
     </div>
     """
   end
@@ -66,6 +79,7 @@ defmodule KitchenRecipeWeb.UserRegistrationLive do
         {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect(changeset)
         {:noreply, socket |> assign(check_errors: true) |> assign_form(changeset)}
     end
   end

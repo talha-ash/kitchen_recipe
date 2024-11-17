@@ -14,7 +14,7 @@ alias KitchenRecipe.Repo
 alias KitchenRecipe.Accounts.User
 alias KitchenRecipe.Recipes.{RecipeCategory, Ingredient, Tag}
 
-user = %User{
+admin_user = %User{
   email: "admin@admin.com",
   username: "admin",
   fullname: "Admin",
@@ -22,7 +22,39 @@ user = %User{
   hashed_password: Bcrypt.hash_pwd_salt("admin")
 }
 
-{:ok, user} = Repo.insert(user)
+users = [
+  %User{
+    email: "nick@gmail.com",
+    username: "nick",
+    fullname: "Nick Evan",
+    role: :client,
+    hashed_password: Bcrypt.hash_pwd_salt("password12345")
+  },
+  %User{
+    email: "john@gmail.com",
+    username: "john",
+    fullname: "John Doe",
+    role: :client,
+    hashed_password: Bcrypt.hash_pwd_salt("password12345")
+  },
+  %User{
+    email: "johnny@gmail.com",
+    username: "johnny",
+    fullname: "Johnny Doe",
+    role: :client,
+    hashed_password: Bcrypt.hash_pwd_salt("password12345")
+  },
+  %User{
+    email: "bill@gmail.com",
+    username: "bill",
+    fullname: "Bill Smith",
+    role: :client,
+    hashed_password: Bcrypt.hash_pwd_salt("password12345")
+  }
+]
+
+{:ok, user} = Repo.insert(admin_user)
+Enum.each(users, fn user -> Repo.insert(user) end)
 
 categories = [
   %RecipeCategory{name: "Breakfast", description: "Breakfast", user_id: user.id},

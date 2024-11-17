@@ -6,7 +6,7 @@ defmodule KitchenRecipe.Accounts.User do
     field :email, :string
     field :username, :string
     field :fullname, :string
-    field :role, Ecto.Enum, values: [:admin, :client]
+    field :role, Ecto.Enum, values: [:admin, :client], default: :client
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true

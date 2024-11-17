@@ -7,7 +7,6 @@ defmodule KitchenRecipe.Recipes.Tag do
 
   schema "tags" do
     field :name, :string
-    field :description, :string
 
     many_to_many(:recipes, Recipe, join_through: RecipeTag)
 
@@ -16,48 +15,24 @@ defmodule KitchenRecipe.Recipes.Tag do
 
   def changeset(tag, attrs) do
     tag
-    |> cast(attrs, [:name, :description])
+    |> cast(attrs, [:name])
     |> validate_required([:name])
+    |> validate_length(:name, min: 3, message: "must be at least 3 characters")
     |> unique_constraint(:name)
   end
 
-  def new_changeset(%__MODULE__{} = tag, attrs, %{recipe_id: recipe_id}) do
-    Map.put(tag, :scope_id, recipe_id)
-    |> cast(attrs, [:name, :description])
-    |> validate_required([:name])
-    |> unique_constraint(:name)
-  end
-
-  def new_changeset(%__MODULE__{} = tag, attrs) do
+  def new_assoc_changeset(%__MODULE__{} = tag, attrs) do
     tag
-    |> cast(attrs, [:name, :description])
-    |> validate_required([:name])
-    |> unique_constraint(:name)
+    |> cast(attrs, [:id])
   end
 
   def put_assoc_with_recipe(changeset, %{"tags" => tags}) do
-    tags = Map.values(tags)
-    {db_tags, new_tags} = Enum.split_with(tags, fn tag -> tag["id"] end)
-
-    new_tags =
-      Enum.map(new_tags, fn tag ->
-        new_changeset(%__MODULE__{}, tag)
-      end)
-
-    db_tags_id = Enum.map(db_tags, fn tag -> tag["id"] end)
+    db_tags_id = Enum.map(tags, fn tag -> tag.id end)
     db_tags = Repo.all(from(t in __MODULE__, where: t.id in ^db_tags_id))
 
     changeset
-    |> put_assoc(:tags, db_tags ++ new_tags)
-  end
-
-  def cast_assoc_with_recipe(changeset, recipe_id) do
-    changeset
-    |> cast_assoc(
-      :tags,
-      required: true,
-      with: {__MODULE__, :new_changeset, [%{recipe_id: recipe_id}]}
-    )
+    |> put_assoc(:tags, db_tags, required: true)
+    |> validate_length(:tags, min: 1, message: "must have at least one tag")
   end
 
   def cast_assoc_with_recipe(changeset) do
@@ -65,7 +40,7 @@ defmodule KitchenRecipe.Recipes.Tag do
     |> cast_assoc(
       :tags,
       required: true,
-      with: {__MODULE__, :new_changeset, []}
+      with: &new_assoc_changeset/2
     )
   end
 end

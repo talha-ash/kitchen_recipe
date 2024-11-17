@@ -8,11 +8,16 @@
       <%= assigns[:page_title] || "KitchenRecipe" %>
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
   </head>
   <body class="bg-white">
-    <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
+    <%!-- <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
       <%= if @current_user do %>
         <li class="text-[0.8125rem] leading-6 text-zinc-900">
           <%= @current_user.email %>
@@ -52,7 +57,7 @@
           </.link>
         </li>
       <% end %>
-    </ul>
+    </ul> --%>
     <%= @inner_content %>
   </body>
 </html>
