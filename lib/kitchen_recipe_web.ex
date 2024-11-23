@@ -17,7 +17,8 @@ defmodule KitchenRecipeWeb do
   those modules here.
   """
 
-  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
+  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt uploads)
+  def uploads_path, do: Application.app_dir(:kitchen_recipe, "priv/static/uploads")
 
   def router do
     quote do

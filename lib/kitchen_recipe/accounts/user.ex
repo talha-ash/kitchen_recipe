@@ -1,17 +1,20 @@
 defmodule KitchenRecipe.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias KitchenRecipe.Recipes.Recipe
 
   schema "users" do
     field :email, :string
     field :username, :string
     field :fullname, :string
+    field :avatar_url, :string
     field :role, Ecto.Enum, values: [:admin, :client], default: :client
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
 
+    has_many :recipes, Recipe
     timestamps(type: :utc_datetime)
   end
 
@@ -48,6 +51,16 @@ defmodule KitchenRecipe.Accounts.User do
     |> unique_constraint(:username)
     |> validate_email(opts)
     |> validate_password(opts)
+  end
+
+  @doc """
+  A user changeset for update avatar.
+  """
+  def update_avatar_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:avatar_url])
+    |> validate_required([:avatar_url])
+    |> validate_length(:avatar_url, mix: 4)
   end
 
   defp validate_email(changeset, opts) do

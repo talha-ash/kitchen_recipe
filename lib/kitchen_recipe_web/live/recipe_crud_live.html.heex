@@ -1,5 +1,6 @@
-<div>
+<div class="m-5">
   <.live_component module={CreateTag} id="create-tag" />
+  <.live_component module={CreateIngredient} id="create-ingredient" />
   <h1>Users Recipes</h1>
   <ul>
     <li :for={recipe <- @recipes}>
@@ -26,7 +27,7 @@
       options={[{"Breakfast", 1}, {"Lunch", 2}, {"Dinner", 3}]}
     />
     <.input field={@form[:video_title]} placeholder="Video Title" />
-    <.live_file_input upload={@uploads.recipe_video} />
+    <.live_file_input upload={@uploads.recipe_video} required={true} />
     <%!-- render each video entry --%>
     <%= for entry <- @uploads.recipe_video.entries do %>
       <article class="upload-entry">
@@ -49,23 +50,80 @@
         </button>
 
         <%!-- Phoenix.Component.upload_errors/2 returns a list of error atoms --%>
-        <%= for err <- upload_errors(@uploads.avatar, entry) do %>
+        <%= for err <- upload_errors(@uploads.recipe_video, entry) do %>
           <p class="alert alert-danger"><%= error_to_string(err) %></p>
         <% end %>
       </article>
     <% end %>
 
+    <h1 class="mt-20">Recipe Primary Images</h1>
+    <.live_file_input upload={@uploads.recipe_primary_image} required={true} />
+    <%!-- render each video entry --%>
+    <%= for entry <- @uploads.recipe_primary_image.entries do %>
+      <article class="upload-entry">
+        <figure>
+          <.live_img_preview entry={entry} />
+          <figcaption><%= entry.client_name %></figcaption>
+        </figure>
+
+        <%!-- entry.progress will update automatically for in-flight entries --%>
+        <progress value={entry.progress} max="100"><%= entry.progress %>%</progress>
+
+        <%!-- a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 --%>
+        <button
+          type="button"
+          phx-click="cancel-upload"
+          phx-value-ref={entry.ref}
+          aria-label="cancel"
+        >
+          &times;
+        </button>
+
+        <%!-- Phoenix.Component.upload_errors/2 returns a list of error atoms --%>
+        <%= for err <- upload_errors(@uploads.recipe_primary_image, entry) do %>
+          <p class="alert alert-danger"><%= error_to_string(err) %></p>
+        <% end %>
+      </article>
+    <% end %>
     <h1 class="mt-20">Recipe Images</h1>
-    <div :if={used_input?(@form[:recipe_images])}>
+    <.live_file_input upload={@uploads.recipe_images} />
+    <%!-- render each video entry --%>
+    <%= for entry <- @uploads.recipe_images.entries do %>
+      <article class="upload-entry">
+        <figure>
+          <.live_img_preview entry={entry} />
+          <figcaption><%= entry.client_name %></figcaption>
+        </figure>
+
+        <%!-- entry.progress will update automatically for in-flight entries --%>
+        <progress value={entry.progress} max="100"><%= entry.progress %>%</progress>
+
+        <%!-- a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 --%>
+        <button
+          type="button"
+          phx-click="cancel-upload"
+          phx-value-ref={entry.ref}
+          aria-label="cancel"
+        >
+          &times;
+        </button>
+
+        <%!-- Phoenix.Component.upload_errors/2 returns a list of error atoms --%>
+        <%= for err <- upload_errors(@uploads.recipe_images, entry) do %>
+          <p class="alert alert-danger"><%= error_to_string(err) %></p>
+        <% end %>
+      </article>
+    <% end %>
+    <%!-- <div :if={used_input?(@form[:recipe_images])}>
       <.error :for={error <- Enum.map(@form[:recipe_images].errors, &translate_error(&1))}>
         <%= error %>
       </.error>
-    </div>
-    <.inputs_for :let={recipe_image} field={@form[:recipe_images]}>
-      <%!-- <.input type="text" field={recipe_image[:image_url]} /> --%>
-      <.live_file_input upload={@uploads.recipe_image} />
-      <.input type="checkbox" field={recipe_image[:is_primary]} />
-      <button
+    </div> --%>
+    <%!-- <.inputs_for :let={recipe_image} field={@form[:recipe_images]}> --%>
+    <%!-- <.input type="text" field={recipe_image[:image_url]} /> --%>
+
+    <%!-- <.input type="checkbox" field={recipe_image[:is_primary]} /> --%>
+    <%!-- <button
         type="button"
         value={recipe_image.index}
         phx-click="remove-nested"
@@ -81,7 +139,7 @@
       class="mt-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-700"
     >
       Add Recipe Image
-    </button>
+    </button> --%>
 
     <h1 class="mt-20">Recipe Cooking Steps</h1>
     <.inputs_for :let={cs} field={@form[:cooking_steps]}>

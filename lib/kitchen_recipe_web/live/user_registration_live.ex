@@ -3,6 +3,7 @@ defmodule KitchenRecipeWeb.UserRegistrationLive do
 
   alias KitchenRecipe.Accounts
   alias KitchenRecipe.Accounts.User
+  alias Support.Uploads
 
   def render(assigns) do
     ~H"""
@@ -38,6 +39,10 @@ defmodule KitchenRecipeWeb.UserRegistrationLive do
             <label for="">Password</label>
             <.input field={@form[:password]} type="password" required placeholder="*****" />
           </div>
+          <div class="form-text-box">
+            <label for="">Avatar</label>
+            <.live_file_input upload={@uploads.avatar} required={true} />
+          </div>
           <div class="btn-wrapper">
             <.button phx-disable-with="Creating account...">Sign Up</.button>
           </div>
@@ -62,6 +67,7 @@ defmodule KitchenRecipeWeb.UserRegistrationLive do
       socket
       |> assign(trigger_submit: false, check_errors: false)
       |> assign_form(changeset)
+      |> allow_upload(:avatar, accept: ~w(.jpg .jpeg .png), max_entries: 1)
 
     {:ok, socket, temporary_assigns: [form: nil]}
   end
@@ -75,6 +81,9 @@ defmodule KitchenRecipeWeb.UserRegistrationLive do
             &url(~p"/users/confirm/#{&1}")
           )
 
+        avatar_path = "#{user.id}/avatar"
+        avatar_url = Uploads.upload_files(socket, :avatar, avatar_path) |> Enum.at(0)
+        Accounts.create_or_update_user_avatar(user.id, avatar_url)
         changeset = Accounts.change_user_registration(user)
         {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
 

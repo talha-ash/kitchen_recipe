@@ -8,6 +8,7 @@ defmodule KitchenRecipe.Repo.Migrations.CreateUsersAuthTables do
       add :email, :citext, null: false
       add :username, :string, null: false
       add :fullname, :string
+      add :avatar_url, :string
       add :profile_picture, :string
       add :is_active, :boolean, default: true
       add :role, :string

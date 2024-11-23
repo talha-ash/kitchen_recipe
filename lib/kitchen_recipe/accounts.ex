@@ -6,7 +6,7 @@ defmodule KitchenRecipe.Accounts do
   import Ecto.Query, warn: false
   alias KitchenRecipe.Repo
 
-  alias KitchenRecipe.Accounts.{User, UserToken, UserNotifier}
+  alias KitchenRecipe.Accounts.{User, UserToken, UserNotifier, UserFollower}
 
   ## Database getters
 
@@ -59,6 +59,25 @@ defmodule KitchenRecipe.Accounts do
 
   """
   def get_user!(id), do: Repo.get!(User, id)
+
+  ## User Avatar Update
+
+  @doc """
+  Add Or Update a user avatar url.
+
+  ## Examples
+
+      iex> create_or_update_user_avatar(1, "https://example.com/avatar.png")
+      {:ok, %User{}}
+
+  """
+  def create_or_update_user_avatar(user_id, avatar_url) do
+    user = get_user!(user_id)
+
+    user
+    |> User.update_avatar_changeset(%{avatar_url: avatar_url})
+    |> Repo.insert_or_update()
+  end
 
   ## User registration
 
@@ -349,5 +368,16 @@ defmodule KitchenRecipe.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  def get_follow_counts(user_id) do
+    from(f in UserFollower,
+      where: f.follower_user_id == ^user_id or f.followed_user_id == ^user_id,
+      select: %{
+        followers_count: count(fragment("CASE WHEN followed_user_id = ? THEN 1 END", ^user_id)),
+        following_count: count(fragment("CASE WHEN follower_user_id = ? THEN 1 END", ^user_id))
+      }
+    )
+    |> Repo.one()
   end
 end

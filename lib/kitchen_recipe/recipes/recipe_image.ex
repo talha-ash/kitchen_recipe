@@ -26,18 +26,19 @@ defmodule KitchenRecipe.Recipes.RecipeImage do
   def cast_assoc_with_recipe(changeset) do
     changeset
     |> cast_assoc(:recipe_images, required: true, with: &new_changeset/2)
-    |> validate_primary_image
+
+    # |> validate_primary_image
   end
 
-  defp validate_primary_image(changeset) do
-    primary_image_length =
-      get_field(changeset, :recipe_images)
-      |> Enum.count(fn recipe_image -> recipe_image.is_primary end)
+  # defp validate_primary_image(changeset) do
+  #   primary_image_length =
+  #     get_field(changeset, :recipe_images)
+  #     |> Enum.count(fn recipe_image -> recipe_image.is_primary end)
 
-    case primary_image_length do
-      0 -> add_error(changeset, :recipe_images, "Recipe must have a primary image")
-      1 -> changeset
-      _ -> add_error(changeset, :recipe_images, "Recipe must have a single primary image")
-    end
-  end
+  #   case primary_image_length do
+  #     0 -> add_error(changeset, :recipe_images, "Recipe must have a primary image")
+  #     1 -> changeset
+  #     _ -> add_error(changeset, :recipe_images, "Recipe must have a single primary image")
+  #   end
+  # end
 end

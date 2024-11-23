@@ -46,8 +46,8 @@ defmodule KitchenRecipe.Recipes.Recipe do
     timestamps(type: :utc_datetime)
   end
 
-  @recipe_cast_fields ~w(title serve_time description nutrition_facts user_id recipe_category_id)a
-  @recipe_required_fields ~w(title serve_time nutrition_facts user_id recipe_category_id)a
+  @recipe_cast_fields ~w(title serve_time description nutrition_facts video_url video_title user_id recipe_category_id)a
+  @recipe_required_fields ~w(title serve_time nutrition_facts video_url video_title user_id recipe_category_id)a
 
   @doc false
   def changeset(recipe, attrs) do

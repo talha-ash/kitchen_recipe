@@ -1,1 +1,389 @@
-<div>Feed Page</div>
+<main class="global-wrapper container">
+  <div class="global-content">
+    <div class="left-wrapper">
+      <.user_detail current_user={@current_user} user_info={@user_info} />
+      <.top_recipes top_recipes={@top_recipes} />
+    </div>
+    <!-- center-wrapper -->
+    <div class="global-center-pane">
+      <.create_recipe_bar />
+      <div
+        class="main-center-pane spacing"
+        id="recipes"
+        phx-update="stream"
+        phx-viewport-bottom="load-more"
+      >
+        <article :for={{id, recipe} <- @streams.recipes} id={id} class="blog-1">
+          <div class="article-img-1">
+            <div class="article-header">
+              <div class="entry-meta">
+                <div class="author-img-wrapper">
+                  <img src="/assets/images/main-Avatar.png" alt="" />
+                </div>
+                <div class="entry-content">
+                  <strong class="author-name">Tamaki Ryushi</strong>
+                  <span class="entry-date">2h ago</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="article-content">
+            <div class="content-header">
+              <h3 class="article-heading"><%= recipe.title %></h3>
+              <span>
+                <svg
+                  width="25"
+                  height="24"
+                  viewBox="0 0 25 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g opacity="0.5">
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M12.543 19C12.543 19 5.99653 12.9471 4.8618 10.5011C3.72707 8.05507 5.79565 5 8.18113 5C10.5666 5 12.543 7.34142 12.543 7.34142C12.543 7.34142 14.7263 5 16.8347 5C18.943 5 21.4915 7.56199 20.1856 10.5011C18.8798 13.4402 12.543 19 12.543 19Z"
+                      stroke="#363837"
+                      stroke-linecap="square"
+                    />
+                  </g>
+                </svg>
+              </span>
+            </div>
+            <p class="article-description"><%= recipe.description %></p>
+            <div class="article-footer">
+              <div class="article-rating">
+                <button class="font-styling">38 Likes</button>
+                <div class="dot"></div>
+                <button class="font-styling">8 Comments</button>
+              </div>
+              <div class="article-btn">
+                <button type="submit">
+                  <svg
+                    width="15"
+                    height="14"
+                    viewBox="0 0 15 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7.54232 2.91675V11.0834"
+                      stroke="#30BE76"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M3.45898 6.99992H11.6257"
+                      stroke="#30BE76"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+        <%!-- <article class="blog-2">
+                    <div class="blog-content">
+                        <div class="article-img-2">
+                            <div class="article-header">
+                                <div class="entry-meta">
+                                    <div class="author-img-wrapper">
+                                        <img src="/assets/images/main-Avatar.png" alt="">
+                                    </div>
+                                    <div class="entry-content">
+                                        <strong class="author-name">Yara Barros</strong>
+                                        <span class="entry-date">2h ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="article-content">
+                            <div class="content-header">
+                                <h3 class="article-heading">Grilled Meatballs</h3>
+                                <span>
+                                    <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g opacity="0.5">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12.543 19C12.543 19 5.99653 12.9471 4.8618 10.5011C3.72707 8.05507 5.79565 5 8.18113 5C10.5666 5 12.543 7.34142 12.543 7.34142C12.543 7.34142 14.7263 5 16.8347 5C18.943 5 21.4915 7.56199 20.1856 10.5011C18.8798 13.4402 12.543 19 12.543 19Z" stroke="#363837" stroke-linecap="square"/>
+                                        </g>
+                                        </svg>
+                                </span>
+                            </div>
+                            <p class="article-description">I never knew how to make good meatballs until I found
+                                this
+                                recipe. I normally make mine with just ground beef and they still taste great. I've
+                                used
+                                the combination of ...</p>
+                            <div class="article-footer">
+                                <div class="article-rating">
+                                    <button class="font-styling">86 Likes</button>
+                                    <div class="dot"></div>
+                                    <button class="font-styling">17 Comments</button>
+                                </div>
+                                <div class="article-btn">
+                                    <button type="submit">
+                                        <svg width="15" height="14" viewBox="0 0 15 14" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M7.54232 2.91675V11.0834" stroke="#30BE76"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M3.45898 6.99992H11.6257" stroke="#30BE76"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg> Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="article-overlay">
+                        <div class="save_to-pop_up">
+                            <div class="save_to-content">
+                                <div class="save_to-top">
+                                    <h3>Save to</h3>
+                                    <span>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <g opacity="0.4">
+                                                <path d="M18 6.00004L6.00004 18" stroke="#363837"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                                <path d="M5.99996 6.00004L18 18" stroke="#363837"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </g>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <ul>
+                                    <li><button type="submit">Western</button></li>
+                                    <li><button type="submit">Quick Lunch</button></li>
+                                    <li class="active"><button type="submit">Vegies</button></li>
+                                    <li class="add"><button>+ Add New Cookbook</button></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </article> --%>
+        <%!-- <section class="suggested-articles-holder">
+                    <div class="suggestions-header">
+                        <h4>People you might want to follow</h4>
+                        <h4 class="green">See all Suggestion</h4>
+                    </div>
+                    <div class="main-blogs-holder">
+                        <div class="blog-card-wrapper">
+                                <div class="blog-card-content">
+                                    <div class="blog-img-wrapper">
+                                        <img src="/assets/images/blog-img-1.png" alt="">
+                                    </div>
+                                    <div class="blog-details">
+                                            <div class="avatar-img-wrapper">
+                                                <img src="/assets/images/main-Avatar.png" alt="">
+                                            </div>
+                                        <h4>Jennifer Lawred</h4>
+                                        <div class="blog-footer">
+                                            <div class="group-2">
+                                                <strong>289</strong>
+                                                <span>recipes</span>
+                                            </div>
+                                            <div class="group-2">
+                                                <strong>8k</strong>
+                                                <span>followers</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="blog-card-wrapper">
+                            <div class="blog-card-content">
+                                <div class="blog-img-wrapper">
+                                    <img src="/assets/images/blog-img-2.png" alt="">
+                                </div>
+                                <div class="blog-details">
+                                    <div class="avatar-img-wrapper">
+                                        <img src="/assets/images/main-Avatar.png" alt="">
+                                    </div>
+                                    <h4>Naomí Yepes</h4>
+                                    <div class="blog-footer">
+                                        <div class="group-2">
+                                            <strong>289</strong>
+                                            <span>recipes</span>
+                                        </div>
+                                        <div class="group-2">
+                                            <strong>8k</strong>
+                                            <span>followers</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="blog-card-wrapper">
+                            <div class="blog-card-content">
+                                <div class="blog-img-wrapper">
+                                    <img src="/assets/images/blog-img-3.png" alt="">
+                                </div>
+                                <div class="blog-details">
+                                    <div class="avatar-img-wrapper">
+                                        <img src="/assets/images/main-Avatar.png" alt="">
+                                    </div>
+                                    <h4>Niek Bove</h4>
+                                    <div class="blog-footer">
+                                        <div class="group-2">
+                                            <strong>289</strong>
+                                            <span>recipes</span>
+                                        </div>
+                                        <div class="group-2">
+                                            <strong>8k</strong>
+                                            <span>followers</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section> --%>
+        <%!-- <article class="blog-3">
+                    <div class="article-img-1">
+                        <div class="article-header">
+                            <div class="entry-meta">
+                                <div class="author-img-wrapper">
+                                    <img src="/assets/images/main-Avatar.png" alt="">
+                                </div>
+                                <div class="entry-content">
+                                    <strong class="author-name">Nout Golstein</strong>
+                                    <span class="entry-date">2h ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="article-content">
+                        <div class="content-header">
+                            <h3 class="article-heading">Apple and Cocoa Cheesecake</h3>
+                            <span>
+                                <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g opacity="0.5">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.543 19C12.543 19 5.99653 12.9471 4.8618 10.5011C3.72707 8.05507 5.79565 5 8.18113 5C10.5666 5 12.543 7.34142 12.543 7.34142C12.543 7.34142 14.7263 5 16.8347 5C18.943 5 21.4915 7.56199 20.1856 10.5011C18.8798 13.4402 12.543 19 12.543 19Z" stroke="#363837" stroke-linecap="square"/>
+                                    </g>
+                                    </svg>
+                            </span>
+                        </div>
+                        <p class="article-description">Apparently we had reached a great height in the atmosphere, for the sky was …</p>
+                        <div class="article-footer">
+                            <div class="article-rating">
+                                <button class="font-styling">32 likes</button>
+                                <div class="dot"></div>
+                                <button class="font-styling">8 Comments</button>
+                            </div>
+                            <div class="article-btn">
+                                <button type="submit">
+                                    <svg width="15" height="14" viewBox="0 0 15 14" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.54232 2.91675V11.0834" stroke="#30BE76" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                        <path d="M3.45898 6.99992H11.6257" stroke="#30BE76" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg> Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </article> --%>
+        <div class="py-4 text-center text-lg animate-pulse" id="load-more">
+          Loading ...
+        </div>
+      </div>
+    </div>
+    <!-- right-wrapper -->
+    <div class="right-wrapper">
+      <div class="live-cooking-video-wrapper spacing">
+        <div class="live-cooking-video-content">
+          <h4>Live cooking by scratch</h4>
+          <div class="video-wrapper">
+            <img src="/assets/images/live-cooking.png" alt="" />
+            <div class="video-icons-wrapper">
+              <div class="badge-wrapper">
+                <span>LIVE</span>
+              </div>
+              <div class="video-icons-group">
+                <span>
+                  <svg
+                    width="25"
+                    height="24"
+                    viewBox="0 0 25 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <rect x="3.2793" y="5.5" width="19.0787" height="13" rx="1.5" stroke="white" />
+                    <rect x="13.8223" y="12" width="6.02362" height="4" rx="1" fill="white" />
+                  </svg>
+                </span>
+                <span>
+                  <svg
+                    width="25"
+                    height="24"
+                    viewBox="0 0 25 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15.9482 19H19.964V15"
+                      stroke="white"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M19.964 9V5L15.9482 5"
+                      stroke="white"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M5.90918 15L5.90918 19H9.92493"
+                      stroke="white"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M9.92493 5.01927L5.90918 5L5.90918 9"
+                      stroke="white"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="most-active-wrapper spacing">
+        <div class="most-active-content">
+          <h4>Most Active Today</h4>
+          <div class="global-img-wrapper">
+            <div class="avatar-img-wrapper">
+              <img src="/assets/images/Avatar-1.png" alt="" />
+            </div>
+            <div class="avatar-img-wrapper">
+              <img src="/assets/images/Avatar-2.png" alt="" />
+            </div>
+            <div class="avatar-img-wrapper">
+              <img src="/assets/images/Avatar-3.png" alt="" />
+            </div>
+            <div class="avatar-img-wrapper">
+              <img src="/assets/images/Avatar-4.png" alt="" />
+            </div>
+            <div class="avatar-img-wrapper">
+              <img src="/assets/images/Avatar-5.png" alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-footer-wrapper spacing">
+        <div class="sidebar-footer-content">
+          <div class="sidebar-group">
+            <span><a href="">About scratch</a></span>
+            <span><a href="">Help Center</a></span>
+            <span><a href="">Privacy Policy</a></span>
+          </div>
+          <strong>© scratch by Invision 2019</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

@@ -1,5 +1,6 @@
-import MultiSelectHook from "./multi-select-hook"
-
+import MultiSelectHook from "./multi-select-hook";
+import { InfiniteScroll } from "./recipes";
 export default {
-  MultiSelectHook
-}
+  MultiSelectHook,
+  InfiniteScroll,
+};

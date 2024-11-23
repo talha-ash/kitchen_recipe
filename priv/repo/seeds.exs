@@ -169,26 +169,26 @@ Enum.map(ingrediants, fn ingrediant ->
 end)
 
 tags = [
-  %Tag{name: "vegetarian", description: "Vegetarian"},
-  %Tag{name: "vegan", description: "Vegan"},
-  %Tag{name: "gluten free", description: "Gluten Free"},
-  %Tag{name: "low carb", description: "Low Carb"},
-  %Tag{name: "high carb", description: "High Carb"},
-  %Tag{name: "keto", description: "Keto"},
-  %Tag{name: "paleo", description: "Paleo"},
-  %Tag{name: "dairy free", description: "Dairy Free"},
-  %Tag{name: "nut free", description: "Nut Free"},
-  %Tag{name: "soy free", description: "Soy Free"},
-  %Tag{name: "fish free", description: "Fish Free"},
-  %Tag{name: "egg free", description: "Egg Free"},
-  %Tag{name: "meat free", description: "Meat Free"},
-  %Tag{name: "seafood free", description: "Seafood Free"},
-  %Tag{name: "shellfish free", description: "Shellfish Free"},
-  %Tag{name: "fruit free", description: "Fruit Free"},
-  %Tag{name: "sugar free", description: "Sugar Free"},
-  %Tag{name: "sweet free", description: "Sweet Free"},
-  %Tag{name: "fat free", description: "Fat Free"},
-  %Tag{name: "cholesterol free", description: "Cholesterol Free"}
+  %Tag{name: "vegetarian"},
+  %Tag{name: "vegan"},
+  %Tag{name: "gluten free"},
+  %Tag{name: "low carb"},
+  %Tag{name: "high carb"},
+  %Tag{name: "keto"},
+  %Tag{name: "paleo"},
+  %Tag{name: "dairy free"},
+  %Tag{name: "nut free"},
+  %Tag{name: "soy free"},
+  %Tag{name: "fish free"},
+  %Tag{name: "egg free"},
+  %Tag{name: "meat free"},
+  %Tag{name: "seafood free"},
+  %Tag{name: "shellfish free"},
+  %Tag{name: "fruit free"},
+  %Tag{name: "sugar free"},
+  %Tag{name: "sweet free"},
+  %Tag{name: "fat free"},
+  %Tag{name: "cholesterol free"}
 ]
 
 Enum.map(tags, fn tag ->
