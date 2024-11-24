@@ -27,6 +27,11 @@ defmodule KitchenRecipe.Recipes.Recipe do
     field :video_url, :string
     field :video_title, :string
 
+    # virtual fields for query
+    field(:likes_count, :string, virtual: true)
+    field(:comments_count, :string, virtual: true)
+    field(:like_by_current_user, :string, virtual: true)
+
     belongs_to :user, User
     belongs_to :recipe_category, RecipeCategory
 

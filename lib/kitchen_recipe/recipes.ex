@@ -1,6 +1,7 @@
 defmodule KitchenRecipe.Recipes do
-  import Ecto.Query, only: [from: 2]
+  import Ecto.Query
 
+  alias KitchenRecipe.Recipes.RecipeComment
   alias KitchenRecipe.Repo
   alias KitchenRecipe.Recipes.{Recipe, RecipeLike, Tag, Ingredient, SavedRecipe}
 
@@ -13,20 +14,55 @@ defmodule KitchenRecipe.Recipes do
     |> Repo.preload([:tags, :ingredients, :cooking_steps, :recipe_images])
   end
 
-  def get_recipes_by_user(user_id) do
-    Repo.all(from(r in Recipe, where: r.user_id == ^user_id))
+  # Todo clean it
+  def get_recipes_by_user(user_id, opts \\ []) do
+    query = from(r in Recipe, preload: [:recipe_images, :user], where: r.user_id == ^user_id)
+
+    Enum.reduce(opts, query, fn {key, value}, acc ->
+      case key do
+        :limit -> acc |> limit(^value)
+        :offset -> acc |> offset(^value)
+        _ -> acc
+      end
+    end)
+    |> Repo.all()
   end
 
   # Todo clean it
-  def get_recipes_by_user(user_id, offset, limit) do
-    Repo.all(
-      from(r in Recipe,
+  def get_recipes(user_id, opts \\ []) do
+    query =
+      from(
+        r in Recipe,
         preload: [:recipe_images, :user],
-        where: r.user_id == ^user_id,
-        limit: ^limit,
-        offset: ^offset
+        left_join: rl in RecipeLike,
+        on: r.id == rl.recipe_id,
+        left_join: c in RecipeComment,
+        on: r.id == c.recipe_id,
+        group_by: r.id,
+        select_merge: %{
+          likes_count: count(rl.id),
+          comments_count: count(c.id),
+          like_by_current_user:
+            count(fragment("case when ? = ? then 1 end", rl.user_id, ^user_id))
+        }
       )
-    )
+
+    Enum.reduce(opts, query, fn {key, value}, acc ->
+      case key do
+        :limit ->
+          acc |> limit(^value)
+
+        :offset ->
+          acc |> offset(^value)
+
+        :where ->
+          acc |> where(^value)
+
+        _ ->
+          acc
+      end
+    end)
+    |> Repo.all()
   end
 
   def get_user_saved_recipes_count(user_id) do
@@ -100,5 +136,26 @@ defmodule KitchenRecipe.Recipes do
       # Get the rolled back changeset
       {:error, changeset} -> {:error, changeset}
     end
+  end
+
+  def like_recipe(recipe_id, user_id) do
+    case user_liked_recipe?(recipe_id, user_id) do
+      nil ->
+        %RecipeLike{}
+        |> RecipeLike.changeset(%{recipe_id: recipe_id, user_id: user_id})
+        |> Repo.insert()
+
+      recipe_like ->
+        Repo.delete(recipe_like)
+    end
+  end
+
+  def get_recipe_likes(recipe_id) do
+    Repo.all(from(r in RecipeLike, where: r.recipe_id == ^recipe_id, select: count()))
+    |> Enum.at(0)
+  end
+
+  defp user_liked_recipe?(recipe_id, user_id) do
+    Repo.get_by(RecipeLike, recipe_id: recipe_id, user_id: user_id)
   end
 end

@@ -133,3 +133,34 @@ img {
     border-radius: 8px;
     color: #30be76;
 }
+@keyframes bounce-in {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-25%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce-out {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.recipe-heart-bounce-in {
+    animation: bounce-in 0.5s ease-in-out;
+}
+
+.recipe-heart-bounce-out {
+    animation: bounce-out 0.5s ease-in-out;
+}

@@ -4,6 +4,7 @@ defmodule KitchenRecipe.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias KitchenRecipe.Recipes.Recipe
   alias KitchenRecipe.Repo
 
   alias KitchenRecipe.Accounts.{User, UserToken, UserNotifier, UserFollower}
@@ -379,5 +380,30 @@ defmodule KitchenRecipe.Accounts do
       }
     )
     |> Repo.one()
+  end
+
+  def get_top_users_by_recipe_followers(limit \\ 3) do
+    from(
+      u in User,
+      join: r in Recipe,
+      on: u.id == r.user_id,
+      join: f in UserFollower,
+      on: u.id == f.followed_user_id,
+      group_by: u.id,
+      limit: ^limit,
+      order_by: [
+        desc: fragment("COUNT(DISTINCT ?)", r.id),
+        desc: fragment("COUNT(DISTINCT ?)", f.followed_user_id)
+      ],
+      select: %{
+        id: u.id,
+        fullname: u.fullname,
+        username: u.username,
+        avatar_url: u.avatar_url,
+        followers_count: fragment("COUNT(DISTINCT ?)", f.followed_user_id),
+        recipes_count: fragment("COUNT(DISTINCT ?)", r.id)
+      }
+    )
+    |> Repo.all()
   end
 end

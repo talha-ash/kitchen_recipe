@@ -79,7 +79,7 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
       Recipes.get_ingredients()
       |> merge_selection_list(recipe.ingredients)
 
-    recipes = Recipes.get_recipes_by_user!(1)
+    recipes = Recipes.get_recipes_by_user(1)
 
     socket =
       socket

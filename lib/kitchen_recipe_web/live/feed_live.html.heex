@@ -8,10 +8,16 @@
     <div class="global-center-pane">
       <.create_recipe_bar />
       <div
-        class="main-center-pane spacing"
         id="recipes"
         phx-update="stream"
-        phx-viewport-bottom="load-more"
+        phx-viewport-bottom={!@end_of_timeline? && "load-more-bottom"}
+        phx-viewport-top={@page > 1 && "load-more-top"}
+        phx-page-loading
+        class={[
+          if(@end_of_timeline?, do: "pb-10", else: "pb-[calc(50vh)]"),
+          if(@page == 1, do: "pt-10", else: "pt-[calc(50vh)]"),
+          "main-center-pane"
+        ]}
       >
         <article :for={{id, recipe} <- @streams.recipes} id={id} class="blog-1">
           <div class="article-img-1">
@@ -30,12 +36,22 @@
           <div class="article-content">
             <div class="content-header">
               <h3 class="article-heading"><%= recipe.title %></h3>
-              <span>
+              <span
+                id="recipe-heart-icon"
+                phx-click="like-recipe"
+                phx-throttle="1000"
+                phx-value-id={recipe.id}
+                class={[
+                  "transition-all",
+                  recipe.like_by_current_user == 1 && "recipe-heart-bounce-in",
+                  recipe.like_by_current_user == 0 && "recipe-heart-bounce-out"
+                ]}
+              >
                 <svg
                   width="25"
                   height="24"
                   viewBox="0 0 25 24"
-                  fill="none"
+                  fill={if recipe.like_by_current_user > 0, do: "red", else: "none"}
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <g opacity="0.5">
@@ -53,9 +69,11 @@
             <p class="article-description"><%= recipe.description %></p>
             <div class="article-footer">
               <div class="article-rating">
-                <button class="font-styling">38 Likes</button>
+                <button class="font-styling">
+                  <%= recipe.likes_count %> Likes
+                </button>
                 <div class="dot"></div>
-                <button class="font-styling">8 Comments</button>
+                <button class="font-styling"><%= recipe.comments_count %> Comments</button>
               </div>
               <div class="article-btn">
                 <button type="submit">
@@ -84,6 +102,12 @@
               </div>
             </div>
           </div>
+
+          <.live_component
+            :if={@people_suggestion_cursor == recipe.id}
+            module={PeopleSuggestion}
+            id="people-suggestion"
+          />
         </article>
         <%!-- <article class="blog-2">
                     <div class="blog-content">
@@ -284,9 +308,9 @@
                         </div>
                     </div>
                 </article> --%>
-        <div class="py-4 text-center text-lg animate-pulse" id="load-more">
-          Loading ...
-        </div>
+      </div>
+      <div :if={!@end_of_timeline?} class="py-4 text-center text-lg animate-pulse" id="load-more">
+        Loading ...<%= @end_of_timeline? %>
       </div>
     </div>
     <!-- right-wrapper -->
