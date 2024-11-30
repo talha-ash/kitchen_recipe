@@ -1,5 +1,6 @@
 defmodule KitchenRecipeWeb.Components.Sidebar do
   use Phoenix.Component
+  use KitchenRecipeWeb, :verified_routes
 
   def user_detail(assigns) do
     ~H"""
@@ -7,10 +8,12 @@ defmodule KitchenRecipeWeb.Components.Sidebar do
       <div class="profile-stats-content">
         <div class="top-area">
           <div class="avatar-img-wrapper">
-            <img src="/assets/images/main-Avatar.png" alt="" />
+            <img src={@current_user.avatar_url} alt="" />
           </div>
           <div class="avatar-content">
-            <h4><%= @current_user.fullname || @current_user.username %></h4>
+            <.link href={~p"/profile/#{@current_user.id}"}>
+              <h4 class="cursor-pointer"><%= @current_user.fullname || @current_user.username %></h4>
+            </.link>
             <%!-- <span class="font-styling">Potato Master</span> --%>
             <div class="followers-wrapper font-styling ">
               <.async_result :let={user_info} assign={@user_info}>
@@ -42,6 +45,38 @@ defmodule KitchenRecipeWeb.Components.Sidebar do
             </strong>
             <span>Following</span>
           </div>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  def other_user_detail(assigns) do
+    ~H"""
+    <div class="Profile-Stats-wrapper spacing">
+      <div class="profile-stats-content">
+        <div class="top-area">
+          <div class="avatar-img-wrapper">
+            <img src={@current_user.avatar_url} alt="" />
+          </div>
+          <div class="avatar-content">
+            <.link href={~p"/profile/#{@current_user.id}"}>
+              <h4 class="cursor-pointer"><%= @current_user.fullname || @current_user.username %></h4>
+            </.link>
+            <%!-- <span class="font-styling">Potato Master</span> --%>
+            <div class="followers-wrapper font-styling ">
+              <.async_result :let={user_info} assign={@user_info}>
+                <:loading>Loading User Info...</:loading>
+                <:failed :let={_failure}>there was an error loading the organization</:failed>
+                <div><%= user_info.followers_count %> followers</div>
+                <div class="dot"></div>
+                <div><%= user_info.recipes_likes %> likes</div>
+              </.async_result>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-area">
+          <button>Follow</button>
         </div>
       </div>
     </div>

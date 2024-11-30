@@ -1,0 +1,182 @@
+<main>
+  <div class="global-wrapper">
+    <div class="global-content container">
+      <div class="left-pane">
+        <.user_detail
+          :if={@is_current_user == :current_user}
+          current_user={@current_user}
+          user_info={@user_info}
+        />
+        <.other_user_detail
+          :if={@is_current_user == :other}
+          current_user={@current_user}
+          user_info={@user_info}
+        />
+        <div :if={@is_current_user == :current_user} class="guide-section spacing">
+          <div class="guide-section-content">
+            <h4>
+              <span>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M19.5603 7.83885C19.5603 6.182 18.2172 4.83885 16.5603 4.83885V4.83885L5.56032 15.8388L5.56032 18.8388L8.56032 18.8388L19.5603 7.83885V7.83885Z"
+                    stroke="#363837"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M15.248 6.49756C15.248 6.49756 16.4382 6.70391 17.1559 7.42166C17.8737 8.13942 18.1693 9.16846 18.1693 9.16846"
+                    stroke="#363837"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              Edit Profile
+            </h4>
+            <h4 class="setting">
+              <span>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M10 18.7101C9.45933 18.5492 8.94604 18.3247 8.46879 18.0454L8.30733 18.2068C7.91681 18.5974 7.28364 18.5974 6.89312 18.2068L5.79317 17.1069C5.40265 16.7164 5.40265 16.0832 5.79317 15.6927L5.95464 15.5312C5.67526 15.054 5.45079 14.5407 5.28988 14H5C4.44772 14 4 13.5523 4 13V11C4 10.4477 4.44772 10 5 10H5.28988C5.45079 9.45933 5.67526 8.94604 5.95464 8.46879L5.79317 8.30733C5.40265 7.91681 5.40265 7.28364 5.79317 6.89312L6.89312 5.79317C7.28364 5.40265 7.91681 5.40265 8.30733 5.79317L8.46879 5.95464C8.94604 5.67526 9.45933 5.45079 10 5.28988V5C10 4.44772 10.4477 4 11 4H13C13.5523 4 14 4.44772 14 5V5.28988C14.5407 5.45079 15.054 5.67526 15.5312 5.95464L15.6927 5.79317C16.0832 5.40265 16.7164 5.40265 17.1069 5.79317L18.2068 6.89312C18.5974 7.28364 18.5974 7.91681 18.2068 8.30733L18.0454 8.46879C18.3247 8.94604 18.5492 9.45933 18.7101 10H19C19.5523 10 20 10.4477 20 11V13C20 13.5523 19.5523 14 19 14H18.7101C18.5492 14.5407 18.3247 15.054 18.0454 15.5312L18.2068 15.6927C18.5974 16.0832 18.5974 16.7164 18.2068 17.1069L17.1069 18.2068C16.7164 18.5974 16.0832 18.5974 15.6927 18.2068L15.5312 18.0454C15.054 18.3247 14.5407 18.5492 14 18.7101V19C14 19.5523 13.5523 20 13 20H11C10.4477 20 10 19.5523 10 19V18.7101V18.7101Z"
+                    stroke="#363837"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <circle cx="12" cy="12" r="4" stroke="#363837" />
+                </svg>
+              </span>
+              Settings
+            </h4>
+            <.link href={~p"/users/log_out"} method="delete">
+              <h4>
+                <span>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 16V19H5V5H12V8"
+                      stroke="#363837"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M17 12H9H17Z"
+                      stroke="#363837"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M16 9L18 12L16 15"
+                      stroke="#363837"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+                Log Out
+              </h4>
+            </.link>
+          </div>
+        </div>
+      </div>
+      <!-- center-wrapper -->
+      <div class="global-center-pane">
+        <div class="my-recipes-wrapper">
+          <div class="my-recipes-content">
+            <div class="recipe-header">
+              <h1>My Recipes</h1>
+              <div class="add-recipe-btn">
+                <button type="submit">
+                  + Add New
+                </button>
+              </div>
+            </div>
+
+            <div class="profile-items-card-holder overflow-auto">
+              <div :for={category <- @recipe_categories} class="item-card-wrapper">
+                <div
+                  class={"item-card-base #{active_category_class(@selected_category_id, category.id)}"}
+                  phx-click="select-category"
+                  phx-value-id={category.id}
+                >
+                  <div class="item-img">
+                    <img src={category.image_url} alt="" />
+                  </div>
+                  <div class="item-entry">
+                    <h4><%= category.name %></h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="main-center-pane overflow-auto">
+          <div :for={recipe <- @recipes} class="recipe-card-wrapper">
+            <div class="recipe-card-base">
+              <div class="recipe-img-wrapper">
+                <img src={recipe.image_url} alt="" />
+              </div>
+              <div class="recipe-content">
+                <h3><%= recipe.title %></h3>
+                <div class="recipe-footer">
+                  <div class="recipe-detail font-styling">
+                    <div>± <%= recipe.serve_time %> mins</div>
+                    <div class="dot"></div>
+                    <div><%= recipe.ingredient_count %> ingredients</div>
+                  </div>
+                  <div class="cook-btn">
+                    <button type="submit">
+                      <svg
+                        width="9"
+                        height="8"
+                        viewBox="0 0 9 8"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                          d="M2.32026 7.35981C1.65536 7.69226 0.873047 7.20876 0.873047 6.46538V1.53478C0.873047 0.7914 1.65536 0.307904 2.32026 0.640355L7.25086 3.10566C7.98791 3.47418 7.98791 4.52598 7.25086 4.89451L2.32026 7.35981Z"
+                          stroke="#30BE76"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                      Cook
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div :if={Enum.empty?(@recipes)}>
+            <h1>No Recipe For this category</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

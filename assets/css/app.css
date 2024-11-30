@@ -5,6 +5,7 @@
 @import "./signup.css";
 @import "./header.css";
 @import "./feed.css";
+@import "./profile.css";
 /* This file is for your main application CSS */
 * {
     padding: 0;

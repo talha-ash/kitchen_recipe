@@ -57,14 +57,54 @@ users = [
 Enum.each(users, fn user -> Repo.insert(user) end)
 
 categories = [
-  %RecipeCategory{name: "Breakfast", description: "Breakfast", user_id: user.id},
-  %RecipeCategory{name: "Lunch", description: "Lunch", user_id: user.id},
-  %RecipeCategory{name: "Dinner", description: "Dinner", user_id: user.id},
-  %RecipeCategory{name: "Snacks", description: "Snacks", user_id: user.id},
-  %RecipeCategory{name: "Dessert", description: "Dessert", user_id: user.id},
-  %RecipeCategory{name: "Side Dish", description: "Side Dish", user_id: user.id},
-  %RecipeCategory{name: "Beverage", description: "Beverage", user_id: user.id},
-  %RecipeCategory{name: "Vegetarian", description: "Vegetarian", user_id: user.id}
+  %RecipeCategory{
+    name: "Breakfast",
+    description: "Breakfast",
+    image_url: "/uploads/chocolates-category.png",
+    user_id: user.id
+  },
+  %RecipeCategory{
+    name: "Lunch",
+    description: "Lunch",
+    image_url: "/uploads/west-category.png",
+    user_id: user.id
+  },
+  %RecipeCategory{
+    name: "Dinner",
+    description: "Dinner",
+    image_url: "/uploads/chocolates-category.png",
+    user_id: user.id
+  },
+  %RecipeCategory{
+    name: "Snacks",
+    description: "Snacks",
+    image_url: "/uploads/west-category.png",
+    user_id: user.id
+  },
+  %RecipeCategory{
+    name: "Dessert",
+    description: "Dessert",
+    image_url: "/uploads/chocolates-category.png",
+    user_id: user.id
+  },
+  %RecipeCategory{
+    name: "Side Dish",
+    description: "Side Dish",
+    image_url: "/uploads/west-category.png",
+    user_id: user.id
+  },
+  %RecipeCategory{
+    name: "Beverage",
+    description: "Beverage",
+    image_url: "/uploads/chocolates-category.png",
+    user_id: user.id
+  },
+  %RecipeCategory{
+    name: "Vegetarian",
+    description: "Vegetarian",
+    image_url: "/uploads/west-category.png",
+    user_id: user.id
+  }
 ]
 
 Enum.map(categories, fn category ->

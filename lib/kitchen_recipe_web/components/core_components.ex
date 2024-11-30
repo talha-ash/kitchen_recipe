@@ -16,7 +16,9 @@ defmodule KitchenRecipeWeb.CoreComponents do
   """
   use Phoenix.Component
 
+  alias Hex.API.User
   alias Phoenix.LiveView.JS
+  alias KitchenRecipe.Accounts.User
   import KitchenRecipeWeb.Gettext
 
   @doc """
@@ -544,6 +546,51 @@ defmodule KitchenRecipeWeb.CoreComponents do
       </dl>
     </div>
     """
+  end
+
+  @doc """
+  Renders User fullname or username.
+
+  ## Examples
+
+      <.username user={user}/>
+  """
+  attr :user, User, required: true
+  attr :username_first, :any, default: nil
+
+  def user_name(assigns) do
+    if assigns.username_first do
+      ~H"""
+      <%= @user.username || @user.fullname %>
+      """
+    else
+      ~H"""
+      <%= @user.fullname || @user.username %>
+      """
+    end
+  end
+
+  @doc """
+  Renders User image or initials.
+
+  ## Examples
+
+      <.user_avatar user={user}/>
+  """
+  attr :user, User, required: true
+
+  def user_avatar(assigns) do
+    if assigns.user.avatar_url do
+      ~H"""
+      <img class="mr-2 w-6 h-6 rounded-full" src={@user.avatar_url} alt="avatar" />
+      """
+    else
+      ~H"""
+      <div class="mr-2 w-6 h-6 flex justify-center items-center  text-xs rounded-full bg-gray-200">
+        <%= String.slice(@user.username, 0..1) |> String.upcase() %>
+      </div>
+      """
+    end
   end
 
   @doc """

@@ -5,12 +5,13 @@ defmodule KitchenRecipeWeb.FeedLive do
   alias KitchenRecipe.Accounts
   alias KitchenRecipe.Recipes
   alias KitchenRecipeWeb.Components.PeopleSuggestion
+  alias KitchenRecipeWeb.Components.Recipes.Recipe
 
   def mount(_params, _session, socket) do
     current_user_id = socket.assigns.current_user.id
 
     second_recipe =
-      Recipes.get_recipes_by_user(current_user_id, limit: 1, offset: 1) |> Enum.at(0)
+      Recipes.get_recipes_by_user(current_user_id, limit: 1, offset: 1) |> Enum.at(0, %{id: 0})
 
     socket =
       socket
@@ -23,6 +24,14 @@ defmodule KitchenRecipeWeb.FeedLive do
       |> paginate_recipes(1)
 
     {:ok, socket}
+  end
+
+  def handle_info({:comment_added, recipe_id}, socket) do
+    current_user_id = socket.assigns.current_user.id
+    recipe = Recipes.get_recipes(current_user_id, where: [id: recipe_id]) |> List.first()
+
+    socket = stream_insert(socket, :recipes, recipe)
+    {:noreply, socket}
   end
 
   def handle_event("like-recipe", %{"id" => id}, socket) do
@@ -68,6 +77,8 @@ defmodule KitchenRecipeWeb.FeedLive do
     case recipes do
       [] ->
         assign(socket, end_of_timeline?: at == -1)
+        |> assign(page: new_page)
+        |> stream(:recipes, recipes, at: at, limit: limit)
 
       [_ | _] = recipes ->
         socket

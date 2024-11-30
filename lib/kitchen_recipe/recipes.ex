@@ -1,9 +1,19 @@
 defmodule KitchenRecipe.Recipes do
   import Ecto.Query
 
-  alias KitchenRecipe.Recipes.RecipeComment
   alias KitchenRecipe.Repo
-  alias KitchenRecipe.Recipes.{Recipe, RecipeLike, Tag, Ingredient, SavedRecipe}
+
+  alias KitchenRecipe.Recipes.{
+    Recipe,
+    RecipeComment,
+    RecipeLike,
+    Tag,
+    Ingredient,
+    SavedRecipe,
+    RecipeCategory,
+    RecipeImage,
+    RecipeIngredient
+  }
 
   def get_recipe!(recipe_id) do
     Repo.get!(Recipe, recipe_id)
@@ -40,8 +50,8 @@ defmodule KitchenRecipe.Recipes do
         on: r.id == c.recipe_id,
         group_by: r.id,
         select_merge: %{
-          likes_count: count(rl.id),
-          comments_count: count(c.id),
+          likes_count: count(fragment("distinct ?", rl.id)),
+          comments_count: count(fragment("distinct ?", c.id)),
           like_by_current_user:
             count(fragment("case when ? = ? then 1 end", rl.user_id, ^user_id))
         }
@@ -153,6 +163,53 @@ defmodule KitchenRecipe.Recipes do
   def get_recipe_likes(recipe_id) do
     Repo.all(from(r in RecipeLike, where: r.recipe_id == ^recipe_id, select: count()))
     |> Enum.at(0)
+  end
+
+  def get_recipe_comments(recipe_id) do
+    Repo.all(
+      from RecipeComment,
+        preload: [:user],
+        where: [recipe_id: ^recipe_id],
+        order_by: [desc: :inserted_at]
+    )
+  end
+
+  def get_user_recipes_by_category(category_id, user_id) do
+    query =
+      from(r in Recipe,
+        where:
+          r.user_id == ^user_id and
+            r.recipe_category_id == ^category_id,
+        left_join: ing in RecipeIngredient,
+        on: ing.recipe_id == r.id,
+        left_join: ri in RecipeImage,
+        on: ri.recipe_id == r.id and ri.is_primary == true,
+        group_by: [r.id, ri.id],
+        select: %{
+          id: r.id,
+          title: r.title,
+          user_id: r.user_id,
+          serve_time: r.serve_time,
+          image_url: ri.image_url,
+          ingredient_count: count(ing.id)
+        }
+      )
+
+    Repo.all(query)
+  end
+
+  def get_recipe_categories() do
+    Repo.all(RecipeCategory)
+  end
+
+  def get_user_recipe_categories(user_id) do
+    query =
+      from rc in RecipeCategory,
+        join: r in Recipe,
+        on: rc.id == r.recipe_category_id and r.user_id == ^user_id,
+        select: %{id: rc.id, name: rc.name, image_url: rc.image_url}
+
+    Repo.all(query)
   end
 
   defp user_liked_recipe?(recipe_id, user_id) do

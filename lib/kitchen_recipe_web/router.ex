@@ -64,6 +64,7 @@ defmodule KitchenRecipeWeb.Router do
       on_mount: [{KitchenRecipeWeb.UserAuth, :ensure_authenticated}] do
       live "/feed", FeedLive
       live "/recipe/new", RecipeCrudLive
+      live "/profile/:id", ProfileLive
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end

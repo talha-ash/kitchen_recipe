@@ -3,6 +3,7 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
   alias KitchenRecipe.Recipes
   alias KitchenRecipe.Recipes
   alias KitchenRecipeWeb.Components.Recipe.{CreateTag, CreateIngredient}
+  import Support.Uploads, only: [upload_files: 3]
 
   def mount(_params, _session, socket) do
     IO.inspect(socket)
@@ -237,24 +238,24 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
     |> (fn images -> [%{image_url: primary_image, is_primary: true}] ++ images end).()
   end
 
-  defp upload_files(socket, field, upload_path) do
-    uploaded_files =
-      consume_uploaded_entries(socket, field, fn %{path: path}, entry ->
-        IO.inspect(entry, label: "Entry")
+  # defp upload_files(socket, field, upload_path) do
+  #   uploaded_files =
+  #     consume_uploaded_entries(socket, field, fn %{path: path}, entry ->
+  #       IO.inspect(entry, label: "Entry")
 
-        dest =
-          Path.join(
-            Application.app_dir(:kitchen_recipe, "priv/static/uploads"),
-            Path.basename(path)
-          )
+  #       dest =
+  #         Path.join(
+  #           Application.app_dir(:kitchen_recipe, "priv/static/uploads"),
+  #           Path.basename(path)
+  #         )
 
-        # You will need to create `priv/static/uploads` for `File.cp!/2` to work.
-        File.cp!(path, dest)
-        {:ok, ~p"/uploads/#{upload_path}/#{Path.basename(dest)}"}
-      end)
+  #       # You will need to create `priv/static/uploads` for `File.cp!/2` to work.
+  #       File.cp!(path, dest)
+  #       {:ok, ~p"/uploads/#{upload_path}/#{Path.basename(dest)}"}
+  #     end)
 
-    uploaded_files
-  end
+  #   uploaded_files
+  # end
 
   defp error_to_string(:too_large), do: "Too large"
   defp error_to_string(:too_many_files), do: "You have selected too many files"
