@@ -4,6 +4,7 @@ defmodule KitchenRecipe.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias KitchenRecipe.Recipes.RecipeImage
   alias KitchenRecipe.Recipes.Recipe
   alias KitchenRecipe.Repo
 
@@ -405,5 +406,38 @@ defmodule KitchenRecipe.Accounts do
       }
     )
     |> Repo.all()
+  end
+
+  def get_user_by_search(query_string) do
+    query_string = "%#{query_string}%"
+
+    query =
+      from u in User,
+        join: r in Recipe,
+        on: u.id == r.user_id,
+        left_join:
+          ri in subquery(
+            from ri in RecipeImage,
+              where: ri.is_primary == true,
+              distinct: ri.recipe_id,
+              select: %{recipe_id: ri.recipe_id, image_url: ri.image_url}
+          ),
+        on: r.id == ri.recipe_id,
+        left_join: f in UserFollower,
+        on: u.id == f.followed_user_id,
+        # Include all selected fields
+        group_by: [u.id, ri.image_url],
+        where: ilike(u.fullname, ^query_string) or ilike(u.username, ^query_string),
+        select: %{
+          id: u.id,
+          fullname: u.fullname,
+          username: u.username,
+          avatar_url: u.avatar_url,
+          followers_count: fragment("COUNT(DISTINCT ?)", f.id),
+          recipes_count: fragment("COUNT(DISTINCT ?)", r.id),
+          recipe_image: ri.image_url
+        }
+
+    Repo.all(query)
   end
 end

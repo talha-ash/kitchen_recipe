@@ -28,6 +28,8 @@
   module={KitchenRecipeWeb.Components.Header}
   id="header"
   current_user={@current_user}
+  recipe_search_page={Map.has_key?(assigns, :recipe_search_page)}
+  search_query={Map.get(assigns, :search_query, "")}
 />
 <main>
   <div>

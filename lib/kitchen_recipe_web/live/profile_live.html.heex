@@ -108,7 +108,7 @@
             <div class="recipe-header">
               <h1>My Recipes</h1>
               <div class="add-recipe-btn">
-                <button type="submit">
+                <button type="button" phx-click={show_modal("add-category")}>
                   + Add New
                 </button>
               </div>
@@ -179,4 +179,13 @@
       </div>
     </div>
   </div>
+  <.modal id="add-category">
+    <div>
+      <.live_component
+        module={CreateRecipeCategory}
+        id="add-category-form"
+        current_user_id={@current_user.id}
+      />
+    </div>
+  </.modal>
 </main>

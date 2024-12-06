@@ -37,7 +37,9 @@ defmodule KitchenRecipeWeb.Components.Recipes.Recipe do
       </div>
       <div class="article-content">
         <div class="content-header">
-          <h3 class="article-heading"><%= @recipe.title %></h3>
+          <.link href={~p"/recipe/#{@recipe.id}"}>
+            <h3 class="article-heading cursor-pointer"><%= @recipe.title %></h3>
+          </.link>
           <span
             id="recipe-heart-icon"
             phx-click="like-recipe"

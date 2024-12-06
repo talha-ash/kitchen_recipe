@@ -1,0 +1,285 @@
+<main>
+  <div class="global-wrapper container">
+    <div class="global-content ">
+      <div class="left-pane">
+        <div class="filters-card-base spacing">
+          <div class="flex-txt">
+            <h4>Search Filters</h4>
+            <span>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M19 6.5H5H19Z"
+                  stroke="#30BE76"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M16 8V5V8Z"
+                  stroke="#30BE76"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M19 12H5H19Z"
+                  stroke="#30BE76"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M8.5 13.5V10.5V13.5Z"
+                  stroke="#30BE76"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M19 17.5H5H19Z"
+                  stroke="#30BE76"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M12.5 19V16V19Z"
+                  stroke="#30BE76"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </div>
+
+          <div id="search-ingredients-filter" class="ingredients-filter" phx-update="ignore">
+            <div class="flex-wrap">
+              <h5>Ingredients</h5>
+              <span class="range-value"><%= @ingredient_count %></span>
+            </div>
+            <input
+              id="ingredient-slider"
+              name="ingredient-count"
+              type="range"
+              min="0"
+              max="20"
+              phx-hook="slider"
+              value={@ingredient_count}
+              class="w-full h-2 accent-[#30be76] bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+            />
+          </div>
+
+          <div id="search-servetime-filter" class="time-filter mt-4" phx-update="ignore">
+            <div class="flex-wrap">
+              <h5>Serving Time</h5>
+              <span>0-<span class="range-value"><%= @serve_time %></span> mins</span>
+            </div>
+            <input
+              id="servetime-slider"
+              name="serve-time"
+              type="range"
+              min="0"
+              max="36"
+              phx-hook="slider"
+              value={@serve_time}
+              class="w-full h-2 accent-[#30be76] bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+            />
+          </div>
+          <h4 class="mt-8">Search for</h4>
+          <div class="search-for-box select-none">
+            <div
+              class="chips-wrap cursor-pointer"
+              phx-click="change-search-context"
+              phx-value-search-context="recipe"
+            >
+              <div class={"chips-text #{active_class(@search_context, "recipe")}"}>
+                <%= length(@recipes) %> recipes
+              </div>
+            </div>
+            <div
+              class="chips-wrap cursor-pointer"
+              phx-click="change-search-context"
+              phx-value-search-context="profile"
+            >
+              <div class={"chips-text #{active_class(@search_context, "profile")}"}>
+                <%= length(@users) %> profiles
+              </div>
+            </div>
+          </div>
+          <div class="filter-btn">
+            <button phx-click="apply-filter">Apply Filter</button>
+          </div>
+        </div>
+      </div>
+      <!-- center-wrapper -->
+      <div class="main-pane-wrapper ">
+        <div class="main-pane-content spacing">
+          <div :if={@search_context != "profile"} class="section-base">
+            <div class="flex-txt">
+              <h4>Recipes</h4>
+              <%!-- <h4 class="green">See all trending</h4> --%>
+            </div>
+            <div class="recipes-flex-box overflow-auto">
+              <div :for={recipe <- @recipes} class="item-wrapper">
+                <div class="item-img">
+                  <img src={recipe.image_url} alt="Chocolates" />
+                </div>
+                <div class="item-entry">
+                  <h4><%= recipe.title %></h4>
+                </div>
+              </div>
+              <%!-- <div class="item-wrapper">
+                                <div class="item-img">
+                                    <img src="./images/Chocolates.png" alt="Chocolates">
+                                </div>
+                                <div class="item-entry">
+                                    <h4>Cardamom and Cranberry Pastry</h4>
+                                </div>
+                            </div>
+                            <div class="item-wrapper">
+                                <div class="item-img">
+                                    <img src="./images/Chocolates.png" alt="Chocolates">
+                                </div>
+                                <div class="item-entry">
+                                    <h4>Coconut Pound Cake</h4>
+                                </div>
+                            </div>
+                            <div class="item-wrapper">
+                                <div class="item-img">
+                                    <img src="./images/Chocolates.png" alt="Chocolates">
+                                </div>
+                                <div class="item-entry">
+                                    <h4>Cardamom and Cranberry Pastry</h4>
+                                </div>
+                            </div>
+                            <div class="item-wrapper">
+                                <div class="item-img">
+                                    <img src="./images/Chocolates.png" alt="Chocolates">
+                                </div>
+                                <div class="item-entry">
+                                    <h4>Coconut Pound Cake</h4>
+                                </div>
+                            </div> --%>
+            </div>
+          </div>
+          <!-- 2-section -->
+          <div :if={@search_context != "recipe"} class="section-base">
+            <div class="flex-txt">
+              <h4>Profiles</h4>
+              <%!-- <h4 class="green">See all Top Profiles</h4> --%>
+            </div>
+            <div class="main-blogs-holder">
+              <div :for={user <- @users} class="blog-card-wrapper">
+                <div class="blog-card-content">
+                  <div class="blog-img-wrapper">
+                    <img src={user.recipe_image} alt="" />
+                  </div>
+                  <div class="blog-details">
+                    <div class="avatar-img-wrapper">
+                      <img src={user.avatar_url} alt="" />
+                    </div>
+                    <h4><.user_name user={user} /></h4>
+                    <div class="blog-footer">
+                      <div class="group-2">
+                        <strong><%= user.recipes_count %></strong>
+                        <span>recipes</span>
+                      </div>
+                      <div class="group-2">
+                        <strong><%= user.followers_count %></strong>
+                        <span>followers</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <%!-- <div class="blog-card-wrapper">
+                                <div class="blog-card-content">
+                                    <div class="blog-img-wrapper">
+                                        <img src="../images/suggested blogs/blog-img-2.png" alt="">
+                                    </div>
+                                    <div class="blog-details">
+                                        <div class="avatar-img-wrapper">
+                                            <img src="../images/main-Avatar.png" alt="">
+                                        </div>
+                                        <h4>Naomí Yepes</h4>
+                                        <div class="blog-footer">
+                                            <div class="group-2">
+                                                <strong>289</strong>
+                                                <span>recipes</span>
+                                            </div>
+                                            <div class="group-2">
+                                                <strong>8k</strong>
+                                                <span>followers</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="blog-card-wrapper">
+                                <div class="blog-card-content">
+                                    <div class="blog-img-wrapper">
+                                        <img src="../images/suggested blogs/blog-img-3.png" alt="">
+                                    </div>
+                                    <div class="blog-details">
+                                        <div class="avatar-img-wrapper">
+                                            <img src="../images/main-Avatar.png" alt="">
+                                        </div>
+                                        <h4>Nout Golstein</h4>
+                                        <div class="blog-footer">
+                                            <div class="group-2">
+                                                <strong>289</strong>
+                                                <span>recipes</span>
+                                            </div>
+                                            <div class="group-2">
+                                                <strong>8k</strong>
+                                                <span>followers</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="blog-card-wrapper">
+                                <div class="blog-card-content">
+                                    <div class="blog-img-wrapper">
+                                        <img src="../images/suggested blogs/blog-img-3.png" alt="">
+                                    </div>
+                                    <div class="blog-details">
+                                        <div class="avatar-img-wrapper">
+                                            <img src="../images/main-Avatar.png" alt="">
+                                        </div>
+                                        <h4>Amish Shiravadakar</h4>
+                                        <div class="blog-footer">
+                                            <div class="group-2">
+                                                <strong>289</strong>
+                                                <span>recipes</span>
+                                            </div>
+                                            <div class="group-2">
+                                                <strong>8k</strong>
+                                                <span>followers</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> --%>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

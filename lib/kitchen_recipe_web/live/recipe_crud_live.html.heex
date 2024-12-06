@@ -1,14 +1,6 @@
 <div class="m-5">
   <.live_component module={CreateTag} id="create-tag" />
-  <.live_component module={CreateIngredient} id="create-ingredient" />
-  <h1>Users Recipes</h1>
-  <ul>
-    <li :for={recipe <- @recipes}>
-      <%= recipe.title %>
-      <button phx-click="edit-recipe" phx-value-id={recipe.id}>Edit Recipe</button>
-    </li>
-  </ul>
-  Recipe Form
+  <.live_component module={CreateIngredient} id="create-ingredient" /> Recipe Form
   <.simple_form id="lala" for={@form} phx-submit="save" phx-change="validate">
     <.input field={@form[:id]} type="hidden" value={@form[:id].value} />
     <.input field={@form[:title]} placeholder="Title" />

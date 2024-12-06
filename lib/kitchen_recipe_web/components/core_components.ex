@@ -555,7 +555,7 @@ defmodule KitchenRecipeWeb.CoreComponents do
 
       <.username user={user}/>
   """
-  attr :user, User, required: true
+  attr :user, :map, required: true
   attr :username_first, :any, default: nil
 
   def user_name(assigns) do

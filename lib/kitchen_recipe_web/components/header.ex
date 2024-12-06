@@ -7,7 +7,7 @@ defmodule KitchenRecipeWeb.Components.Header do
 
   def render(assigns) do
     ~H"""
-    <header class="header-wrapper">
+    <header id="app-header" class="header-wrapper">
       <div class="header-content container">
         <div class="logo-wrapper">
           <.link href={~p"/"}>
@@ -15,7 +15,11 @@ defmodule KitchenRecipeWeb.Components.Header do
           </.link>
         </div>
         <div class="search-bar-wrapper">
-          <form action="" class="flex justify-center items-center">
+          <form
+            phx-submit="search-submit"
+            class="flex justify-center items-center"
+            phx-click={not @recipe_search_page && JS.navigate(~p"/recipe-search")}
+          >
             <svg
               width="24"
               height="24"
@@ -36,8 +40,9 @@ defmodule KitchenRecipeWeb.Components.Header do
             <input
               type="text"
               name="search"
-              id=""
-              placeholder="Search Recipe, Profile, or Ingredients"
+              value={@search_query}
+              autofocus={@recipe_search_page}
+              placeholder="Search Recipe or Profile"
             />
           </form>
         </div>

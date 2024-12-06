@@ -5,37 +5,20 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
   alias KitchenRecipeWeb.Components.Recipe.{CreateTag, CreateIngredient}
   import Support.Uploads, only: [upload_files: 3]
 
-  def mount(_params, _session, socket) do
-    IO.inspect(socket)
+  def mount(params, _session, socket) do
+    live_action = socket.assigns.live_action
 
-    recipe_changeset =
-      Recipes.Recipe.changeset(
-        %Recipes.Recipe{
-          recipe_images: [%Recipes.RecipeImage{}],
-          cooking_steps: [%Recipes.CookingStep{}],
-          tags: [%Recipes.Tag{}],
-          ingredients: [%Recipes.Ingredient{}]
-        },
-        %{}
-      )
+    case live_action do
+      :new ->
+        socket = prepare_page_data(:new, socket)
+        {:ok, socket}
 
-    tags = Recipes.get_tags()
-    ingredients = Recipes.get_ingredients()
-    recipes = Recipes.get_recipes_by_user(1)
-
-    socket =
-      socket
-      |> assign(
-        form: to_form(recipe_changeset),
-        tags: tags |> Enum.map(&%{label: &1.name, id: &1.id, selected: false}),
-        ingredients: ingredients |> Enum.map(&%{label: &1.name, id: &1.id, selected: false}),
-        recipes: recipes
-      )
-      |> allow_upload(:recipe_images, accept: ~w(.jpg .jpeg .png), max_entries: 10)
-      |> allow_upload(:recipe_primary_image, accept: ~w(.jpg .jpeg .png), max_entries: 1)
-      |> allow_upload(:recipe_video, accept: ~w(.mp4), max_entries: 1)
-
-    {:ok, socket}
+      :edit ->
+        id = Map.get(params, "id") |> Integer.parse()
+        IO.inspect(id, label: "ID")
+        socket = prepare_page_data(:edit, id, socket)
+        {:ok, socket}
+    end
   end
 
   def handle_info({:updated_tags, opts}, socket) do
@@ -236,6 +219,80 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
   defp recipe_images_from_upload(primary_image, other_images) do
     Enum.map(other_images, fn image -> %{image_url: image, is_primary: false} end)
     |> (fn images -> [%{image_url: primary_image, is_primary: true}] ++ images end).()
+  end
+
+  defp prepare_page_data(:new, socket) do
+    recipe_changeset =
+      Recipes.Recipe.changeset(
+        %Recipes.Recipe{
+          recipe_images: [%Recipes.RecipeImage{}],
+          cooking_steps: [%Recipes.CookingStep{}],
+          tags: [%Recipes.Tag{}],
+          ingredients: [%Recipes.Ingredient{}]
+        },
+        %{}
+      )
+
+    tags = Recipes.get_tags()
+    ingredients = Recipes.get_ingredients()
+
+    socket
+    |> add_allow_uploads()
+    |> assign(
+      form: to_form(recipe_changeset),
+      tags: tags |> Enum.map(&%{label: &1.name, id: &1.id, selected: false}),
+      ingredients: ingredients |> Enum.map(&%{label: &1.name, id: &1.id, selected: false})
+    )
+  end
+
+  defp prepare_page_data(:edit, :error, socket) do
+    socket
+    |> put_flash(:error, "Recipe Not Found")
+    |> push_navigate(to: "/", replace: true)
+  end
+
+  defp prepare_page_data(:edit, {id, _}, socket) do
+    recipe = Recipes.get_recipe_with_preload(id)
+
+    case recipe do
+      nil ->
+        socket
+        |> put_flash(:error, "Recipe Not Found")
+        |> push_navigate(to: "/", replace: true)
+
+      _ ->
+        recipe_changeset =
+          Recipes.Recipe.update_changeset(recipe, %{
+            "tags" => recipe.tags,
+            "ingredients" => recipe.ingredients
+          })
+
+        tags =
+          Recipes.get_tags()
+          |> merge_selection_list(recipe.tags)
+
+        ingredients =
+          Recipes.get_ingredients()
+          |> merge_selection_list(recipe.ingredients)
+
+        recipes = Recipes.get_recipes_by_user(1)
+
+        socket
+        |> add_allow_uploads()
+        |> assign(
+          form: to_form(recipe_changeset),
+          tags: tags,
+          ingredients: ingredients,
+          recipes: recipes
+        )
+    end
+  end
+
+  defp add_allow_uploads(socket) do
+    socket
+    |> allow_upload(:recipe_images, accept: ~w(.jpg .jpeg .png), max_entries: 10)
+    |> allow_upload(:recipe_primary_image, accept: ~w(.jpg .jpeg .png), max_entries: 1)
+    |> allow_upload(:recipe_video, accept: ~w(.mp4), max_entries: 1)
   end
 
   # defp upload_files(socket, field, upload_path) do

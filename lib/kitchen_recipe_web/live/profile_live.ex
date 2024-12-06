@@ -1,7 +1,7 @@
 defmodule KitchenRecipeWeb.ProfileLive do
-  alias KitchenRecipeWeb.Components.Recipes
   use KitchenRecipeWeb, :live_view
   import KitchenRecipeWeb.Components.Sidebar, only: [user_detail: 1, other_user_detail: 1]
+  alias KitchenRecipeWeb.Components.Recipe.CreateRecipeCategory
   alias KitchenRecipe.Accounts
   alias KitchenRecipe.Recipes
 
@@ -25,6 +25,7 @@ defmodule KitchenRecipeWeb.ProfileLive do
       |> assign(recipe_categories: recipe_categories)
       |> assign(recipes: recipes)
       |> assign(selected_category_id: first_category.id)
+      |> allow_upload(:category_image, accept: ~w(.jpg .jpeg .png), max_entries: 1)
 
     {:ok, socket, temporary_assigns: [recipes: nil]}
   end
@@ -78,4 +79,9 @@ defmodule KitchenRecipeWeb.ProfileLive do
       ""
     end
   end
+
+  defp error_to_string(:too_large), do: "Too large"
+  defp error_to_string(:too_many_files), do: "You have selected too many files"
+  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp error_to_string(_), do: "Please Select Category Image"
 end

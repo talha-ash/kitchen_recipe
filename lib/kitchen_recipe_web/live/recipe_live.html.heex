@@ -1,0 +1,134 @@
+<main>
+  <div class="global-wrapper container">
+    <div class="global-content ">
+      <div class="left-pane">
+        <div class="ingredients-img-wrapper spacing">
+          <div class="ingredients-img-content">
+            <div class="img-top-area">
+              <img src={@recipe_primary_image} alt="" />
+            </div>
+            <div class="img-bottom-area">
+              <div :for={image <- @recipe_other_images} class="group-img-wrapper">
+                <div class="group-img-base">
+                  <img src={image} alt="" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- center-wrapper -->
+      <div class="main-pane-wrapper">
+        <div class="main-pane-content">
+          <section class="section-base spacing">
+            <div class="section-content">
+              <div class="content-header">
+                <h2><%= @recipe.title %></h2>
+                <div class="btn-wrapper">
+                  <button phx-click={JS.navigate(~p"/recipe/edit/#{@recipe.id}")}>
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M19.5603 7.83885C19.5603 6.182 18.2172 4.83885 16.5603 4.83885V4.83885L5.56032 15.8388L5.56032 18.8388L8.56032 18.8388L19.5603 7.83885V7.83885Z"
+                        stroke="#363837"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path
+                        d="M15.248 6.49756C15.248 6.49756 16.4382 6.70391 17.1559 7.42166C17.8737 8.13942 18.1693 9.16846 18.1693 9.16846"
+                        stroke="#363837"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    Edit Recipe
+                  </button>
+                  <%!-- <a href="">Save Changes</a> --%>
+                </div>
+              </div>
+              <div class="content-footer">
+                <h4>Ingredients</h4>
+                <div class="ingredients-content-area">
+                  <div :for={ingredient <- @recipe.ingredients} class="text-wrapper">
+                    <div class="text-content">
+                      <div class="text-group">
+                        <div class="author-img-wrapper">
+                          <img src={ingredient.image_url} alt="" />
+                        </div>
+                        <span><%= ingredient.name %></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-base spacing">
+            <div class="section-content">
+              <h4>How to cook</h4>
+              <div class="htc-base">
+                <div class="htc-wrapper">
+                  <div class="htc-instruction">
+                    <ol>
+                      <li :for={cooking_step <- @recipe.cooking_steps}>
+                        <span><%= cooking_step.step_number %></span>
+                        <p><%= cooking_step.instruction %></p>
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+                <div class="htc-wrapper">
+                  <div class="htc-video">
+                    <div class="video-wrapper">
+                      <img src="./images/cooking.png" alt="" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-base spacing">
+            <div class="section-content">
+              <h4>Additional Information</h4>
+              <div class="info-content">
+                <div class="info-wrapper">
+                  <div class="info-group">
+                    <label>Serving Time</label>
+                    <span><%= @recipe.serve_time %> Mins</span>
+                  </div>
+                </div>
+                <div class="info-wrapper">
+                  <div class="info-group">
+                    <label>Tags</label>
+                    <span :for={tag <- @recipe.tags} class="ml-1"><%= tag.name %>,</span>
+                  </div>
+                </div>
+                <div class="info-wrapper">
+                  <div class="info-group">
+                    <label>Nutrition Facts</label>
+                    <span>
+                      <ol>
+                        <li :for={nutrition_fact <- @recipe.nutrition_facts}>
+                          <%= nutrition_fact %>
+                        </li>
+                      </ol>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

@@ -6,6 +6,8 @@
 @import "./header.css";
 @import "./feed.css";
 @import "./profile.css";
+@import "./recipe-search.css";
+@import "./recipe.css";
 /* This file is for your main application CSS */
 * {
     padding: 0;
@@ -164,4 +166,14 @@ img {
 
 .recipe-heart-bounce-out {
     animation: bounce-out 0.5s ease-in-out;
+}
+
+.slider {
+    @apply [&::-webkit-slider-runnable-track]:rounded-full
+  [&::-webkit-slider-runnable-track]:bg-black/25
+  [&::-webkit-slider-thumb]:appearance-none
+  [&::-webkit-slider-thumb]:h-5
+  [&::-webkit-slider-thumb]:w-5
+  [&::-webkit-slider-thumb]:rounded-full
+  [&::-webkit-slider-thumb]:bg-[#30be76];
 }

@@ -20,8 +20,12 @@ defmodule KitchenRecipe.Recipes do
   end
 
   def get_recipe_with_preload(recipe_id) do
-    Repo.get!(Recipe, recipe_id)
-    |> Repo.preload([:tags, :ingredients, :cooking_steps, :recipe_images])
+    query =
+      from r in Recipe,
+        preload: [:recipe_images, :user, :ingredients, :cooking_steps, :tags, :recipe_likes],
+        where: r.id == ^recipe_id
+
+    Repo.one(query)
   end
 
   # Todo clean it
@@ -210,6 +214,50 @@ defmodule KitchenRecipe.Recipes do
         select: %{id: rc.id, name: rc.name, image_url: rc.image_url}
 
     Repo.all(query)
+  end
+
+  def get_recipe_by_search(query_string, ingredient_count, serve_time) do
+    query_string = "%#{query_string}%"
+
+    query =
+      from r in Recipe,
+        join: i in RecipeIngredient,
+        on: r.id == i.recipe_id,
+        join: ri in RecipeImage,
+        on: r.id == ri.recipe_id and ri.is_primary == true,
+        group_by: [r.id, ri.id],
+        where:
+          ilike(r.title, ^query_string) or
+            ilike(r.description, ^query_string),
+        select: %{
+          id: r.id,
+          title: r.title,
+          user_id: r.user_id,
+          image_url: ri.image_url
+        }
+
+    query
+    |> search_by_serve_time(serve_time)
+    |> search_by_ingredient_count(ingredient_count)
+    |> Repo.all()
+  end
+
+  def search_by_serve_time(query, serve_time) when serve_time not in [nil, "", 0] do
+    query
+    |> where([r], r.serve_time == ^serve_time)
+  end
+
+  def search_by_serve_time(query, _) do
+    query
+  end
+
+  def search_by_ingredient_count(query, ingredient_count) when ingredient_count not in [nil, 0] do
+    query
+    |> having([r], count(r.id) == ^ingredient_count)
+  end
+
+  def search_by_ingredient_count(query, _) do
+    query
   end
 
   defp user_liked_recipe?(recipe_id, user_id) do
