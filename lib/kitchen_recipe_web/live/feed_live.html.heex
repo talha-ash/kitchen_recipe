@@ -1,227 +1,138 @@
-<main class="global-wrapper container">
-  <div class="global-content">
-    <div class="left-wrapper">
-      <.user_detail current_user={@current_user} user_info={@user_info} />
-      <.top_recipes top_recipes={@top_recipes} />
-    </div>
-    <!-- center-wrapper -->
-    <div class="global-center-pane">
-      <.create_recipe_bar />
-      <div
-        id="recipes"
-        phx-update="stream"
-        phx-viewport-bottom={!@end_of_timeline? && "load-more-bottom"}
-        phx-viewport-top={@page > 1 && "load-more-top"}
-        phx-page-loading
-        class={[
-          if(@end_of_timeline?, do: "pb-10", else: "pb-[calc(50vh)]"),
-          if(@page == 1, do: "pt-10", else: "pt-[calc(50vh)]"),
-          "main-center-pane"
-        ]}
-      >
-        <.live_component
-          :for={{_id, recipe} <- @streams.recipes}
-          module={Recipe}
-          id={"recipe-#{recipe.id}"}
-          recipe={recipe}
-          current_user={@current_user}
+<main class="min-h-screen bg-[#F8F9FC]">
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-12 gap-6">
+      <!-- Left Sidebar -->
+      <aside class="col-span-12 lg:col-span-3 space-y-6">
+        <.user_detail current_user={@current_user} user_info={@user_info} />
+        <.top_recipes top_recipes={@top_recipes} />
+      </aside>
+      <!-- Main Feed -->
+      <div class="col-span-12 lg:col-span-6">
+        <.create_recipe_bar />
+        <!-- Recipe Feed -->
+        <div
+          id="recipes"
+          phx-update="stream"
+          phx-viewport-bottom={!@end_of_timeline? && "load-more-bottom"}
+          phx-viewport-top={@page > 1 && "load-more-top"}
+          phx-page-loading
+          class={[
+            if(@end_of_timeline?, do: "pb-10", else: "pb-[calc(50vh)]"),
+            if(@page == 1, do: "pt-10", else: "pt-[calc(50vh)]"),
+            "space-y-6"
+          ]}
         >
           <.live_component
-            :if={@people_suggestion_cursor == recipe.id}
-            module={PeopleSuggestion}
-            id="people-suggestion"
-          />
-        </.live_component>
-        <%!-- <article :for={{id, recipe} <- @streams.recipes} id={id} class="blog-1">
-          <div class="article-img-1">
-            <div class="article-header">
-              <div class="entry-meta">
-                <div class="author-img-wrapper">
-                  <img src="/assets/images/main-Avatar.png" alt="" />
-                </div>
-                <div class="entry-content">
-                  <strong class="author-name">Tamaki Ryushi</strong>
-                  <span class="entry-date">2h ago</span>
-                </div>
-              </div>
-            </div>
+            :for={{_id, recipe} <- @streams.recipes}
+            module={Recipe}
+            id={"recipe-#{recipe.id}"}
+            recipe={recipe}
+            current_user={@current_user}
+          >
+            <.live_component
+              :if={@people_suggestion_cursor == recipe.id}
+              module={PeopleSuggestion}
+              id="people-suggestion"
+              current_user_id={@current_user.id}
+            />
+          </.live_component>
+        </div>
+        <!-- Loading Indicator -->
+        <div :if={!@end_of_timeline?} class="py-6 text-center">
+          <div class="inline-flex items-center px-4 py-2 bg-white rounded-lg shadow-sm">
+            <div class="mr-2 h-2 w-2 bg-blue-500 rounded-full animate-pulse"></div>
+            <div class="text-sm text-gray-600">Loading...</div>
           </div>
-          <div class="article-content">
-            <div class="content-header">
-              <h3 class="article-heading"><%= recipe.title %></h3>
-              <span
-                id="recipe-heart-icon"
-                phx-click="like-recipe"
-                phx-throttle="1000"
-                phx-value-id={recipe.id}
-                class={[
-                  "transition-all",
-                  recipe.like_by_current_user == 1 && "recipe-heart-bounce-in",
-                  recipe.like_by_current_user == 0 && "recipe-heart-bounce-out"
-                ]}
-              >
-                <svg
-                  width="25"
-                  height="24"
-                  viewBox="0 0 25 24"
-                  fill={if recipe.like_by_current_user > 0, do: "red", else: "none"}
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g opacity="0.5">
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M12.543 19C12.543 19 5.99653 12.9471 4.8618 10.5011C3.72707 8.05507 5.79565 5 8.18113 5C10.5666 5 12.543 7.34142 12.543 7.34142C12.543 7.34142 14.7263 5 16.8347 5C18.943 5 21.4915 7.56199 20.1856 10.5011C18.8798 13.4402 12.543 19 12.543 19Z"
-                      stroke="#363837"
-                      stroke-linecap="square"
-                    />
-                  </g>
-                </svg>
-              </span>
-            </div>
-            <p class="article-description"><%= recipe.description %></p>
-            <div class="article-footer">
-              <div class="article-rating">
-                <button class="font-styling">
-                  <%= recipe.likes_count %> Likes
-                </button>
-                <div class="dot"></div>
-                <button class="font-styling"><%= recipe.comments_count %> Comments</button>
-              </div>
-              <div class="article-btn">
-                <button type="submit">
-                  <svg
-                    width="15"
-                    height="14"
-                    viewBox="0 0 15 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M7.54232 2.91675V11.0834"
-                      stroke="#30BE76"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M3.45898 6.99992H11.6257"
-                      stroke="#30BE76"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <.live_component
-            :if={@people_suggestion_cursor == recipe.id}
-            module={PeopleSuggestion}
-            id="people-suggestion"
-          />
-        </article>         --%>
+        </div>
       </div>
-      <div :if={!@end_of_timeline?} class="py-4 text-center text-lg animate-pulse" id="load-more">
-        Loading ...<%= @end_of_timeline? %>
-      </div>
-    </div>
-    <!-- right-wrapper -->
-    <div class="right-wrapper">
-      <div class="live-cooking-video-wrapper spacing">
-        <div class="live-cooking-video-content">
-          <h4>Live cooking by scratch</h4>
-          <div class="video-wrapper">
-            <img src="/assets/images/live-cooking.png" alt="" />
-            <div class="video-icons-wrapper">
-              <div class="badge-wrapper">
-                <span>LIVE</span>
-              </div>
-              <div class="video-icons-group">
-                <span>
-                  <svg
-                    width="25"
-                    height="24"
-                    viewBox="0 0 25 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <rect x="3.2793" y="5.5" width="19.0787" height="13" rx="1.5" stroke="white" />
-                    <rect x="13.8223" y="12" width="6.02362" height="4" rx="1" fill="white" />
-                  </svg>
+      <!-- Right Sidebar -->
+      <aside class="hidden lg:block lg:col-span-3 space-y-6">
+        <!-- Live Cooking Section -->
+        <div class="bg-white rounded-xl shadow-sm">
+          <div class="p-5">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Live cooking by scratch</h3>
+            <div class="relative bg-[#EEF2FF] rounded-lg p-4">
+              <div class="flex justify-between items-start">
+                <span class="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                  LIVE
                 </span>
-                <span>
-                  <svg
-                    width="25"
-                    height="24"
-                    viewBox="0 0 25 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M15.9482 19H19.964V15"
-                      stroke="white"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M19.964 9V5L15.9482 5"
-                      stroke="white"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M5.90918 15L5.90918 19H9.92493"
-                      stroke="white"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M9.92493 5.01927L5.90918 5L5.90918 9"
-                      stroke="white"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </span>
+                <div class="flex space-x-2">
+                  <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <svg
+                      class="w-5 h-5 text-gray-600"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </button>
+                  <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <svg
+                      class="w-5 h-5 text-gray-600"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="most-active-wrapper spacing">
-        <div class="most-active-content">
-          <h4>Most Active Today</h4>
-          <div class="global-img-wrapper">
-            <div class="avatar-img-wrapper">
-              <img src="/assets/images/Avatar-1.png" alt="" />
-            </div>
-            <div class="avatar-img-wrapper">
-              <img src="/assets/images/Avatar-2.png" alt="" />
-            </div>
-            <div class="avatar-img-wrapper">
-              <img src="/assets/images/Avatar-3.png" alt="" />
-            </div>
-            <div class="avatar-img-wrapper">
-              <img src="/assets/images/Avatar-4.png" alt="" />
-            </div>
-            <div class="avatar-img-wrapper">
-              <img src="/assets/images/Avatar-5.png" alt="" />
-            </div>
+        <!-- Most Active Users -->
+        <div class="bg-white rounded-xl shadow-sm p-5">
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Most Active Today</h3>
+          <div class="flex -space-x-2">
+            <img
+              class="inline-block h-10 w-10 rounded-full ring-2 ring-white"
+              src="/assets/images/Avatar-1.png"
+              alt=""
+            />
+            <img
+              class="inline-block h-10 w-10 rounded-full ring-2 ring-white"
+              src="/assets/images/Avatar-2.png"
+              alt=""
+            />
+            <img
+              class="inline-block h-10 w-10 rounded-full ring-2 ring-white"
+              src="/assets/images/Avatar-3.png"
+              alt=""
+            />
+            <img
+              class="inline-block h-10 w-10 rounded-full ring-2 ring-white"
+              src="/assets/images/Avatar-4.png"
+              alt=""
+            />
+            <img
+              class="inline-block h-10 w-10 rounded-full ring-2 ring-white"
+              src="/assets/images/Avatar-5.png"
+              alt=""
+            />
           </div>
         </div>
-      </div>
-      <div class="sidebar-footer-wrapper spacing">
-        <div class="sidebar-footer-content">
-          <div class="sidebar-group">
-            <span><a href="">About scratch</a></span>
-            <span><a href="">Help Center</a></span>
-            <span><a href="">Privacy Policy</a></span>
+        <!-- Footer -->
+        <footer class="p-5">
+          <div class="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
+            <a href="" class="hover:text-gray-700">About scratch</a>
+            <a href="" class="hover:text-gray-700">Help Center</a>
+            <a href="" class="hover:text-gray-700">Privacy Policy</a>
           </div>
-          <strong>© scratch by Invision 2019</strong>
-        </div>
-      </div>
+          <p class="text-sm text-gray-400">© scratch by Invision 2019</p>
+        </footer>
+      </aside>
     </div>
   </div>
 </main>

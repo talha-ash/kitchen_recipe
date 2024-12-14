@@ -57,11 +57,11 @@ defmodule KitchenRecipeWeb.Components.Sidebar do
       <div class="profile-stats-content">
         <div class="top-area">
           <div class="avatar-img-wrapper">
-            <img src={@current_user.avatar_url} alt="" />
+            <img src={@other_user.avatar_url} alt="" />
           </div>
           <div class="avatar-content">
-            <.link href={~p"/profile/#{@current_user.id}"}>
-              <h4 class="cursor-pointer"><%= @current_user.fullname || @current_user.username %></h4>
+            <.link href={~p"/profile/#{@other_user.id}"}>
+              <h4 class="cursor-pointer"><%= @other_user.fullname || @other_user.username %></h4>
             </.link>
             <%!-- <span class="font-styling">Potato Master</span> --%>
             <div class="followers-wrapper font-styling ">
@@ -76,7 +76,25 @@ defmodule KitchenRecipeWeb.Components.Sidebar do
           </div>
         </div>
         <div class="bottom-area">
-          <button>Follow</button>
+          <.async_result :let={user_info} assign={@user_info}>
+            <%= if user_info.is_following do %>
+              <button
+                phx-click="unfollow-user"
+                phx-throttle="400"
+                class="!bg-gray-400 text-gray-500 phx-click-loading:opacity-50 phx-click-loading:cursor-wait"
+              >
+                Following
+              </button>
+            <% else %>
+              <button
+                phx-click="follow-user"
+                phx-throttle="400"
+                class="phx-click-loading:opacity-50 phx-click-loading:cursor-wait"
+              >
+                Follow
+              </button>
+            <% end %>
+          </.async_result>
         </div>
       </div>
     </div>

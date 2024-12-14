@@ -59,49 +59,41 @@ Enum.each(users, fn user -> Repo.insert(user) end)
 categories = [
   %RecipeCategory{
     name: "Breakfast",
-    description: "Breakfast",
     image_url: "/uploads/chocolates-category.png",
     user_id: user.id
   },
   %RecipeCategory{
     name: "Lunch",
-    description: "Lunch",
     image_url: "/uploads/west-category.png",
     user_id: user.id
   },
   %RecipeCategory{
     name: "Dinner",
-    description: "Dinner",
     image_url: "/uploads/chocolates-category.png",
     user_id: user.id
   },
   %RecipeCategory{
     name: "Snacks",
-    description: "Snacks",
     image_url: "/uploads/west-category.png",
     user_id: user.id
   },
   %RecipeCategory{
     name: "Dessert",
-    description: "Dessert",
     image_url: "/uploads/chocolates-category.png",
     user_id: user.id
   },
   %RecipeCategory{
     name: "Side Dish",
-    description: "Side Dish",
     image_url: "/uploads/west-category.png",
     user_id: user.id
   },
   %RecipeCategory{
     name: "Beverage",
-    description: "Beverage",
     image_url: "/uploads/chocolates-category.png",
     user_id: user.id
   },
   %RecipeCategory{
     name: "Vegetarian",
-    description: "Vegetarian",
     image_url: "/uploads/west-category.png",
     user_id: user.id
   }
@@ -115,91 +107,85 @@ ingrediants = [
   %Ingredient{
     name: "Chicken",
     description: "chicken",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   },
   %Ingredient{
     name: "Beef",
     description: "beef",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
-    is_verified: true
-  },
-  %Ingredient{
-    name: "Pork",
-    description: "pork",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   },
   %Ingredient{
     name: "Tofu",
     description: "tofu",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   },
   %Ingredient{
     name: "Egg",
     description: "egg",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   },
   %Ingredient{
     name: "Rice",
     description: "rice",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   },
   %Ingredient{
     name: "Beans",
     description: "beans",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   },
   %Ingredient{
     name: "Tomato",
     description: "tomato",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   },
   %Ingredient{
     name: "Lettuce",
     description: "lettuce",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   },
   %Ingredient{
     name: "Onion",
     description: "onion",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   },
   %Ingredient{
     name: "Carrot",
     description: "carrot",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   },
   %Ingredient{
     name: "Cucumber",
     description: "cucumber",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   },
   %Ingredient{
     name: "Potato",
     description: "potato",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   },
   %Ingredient{
     name: "Corn",
     description: "corn",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   },
   %Ingredient{
     name: "Peanut",
     description: "peanut",
-    image_url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/chicken-690272_960_720.jpg",
+    image_url: "/uploads/ingredient-01.png",
     is_verified: true
   }
 ]

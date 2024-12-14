@@ -3,7 +3,12 @@ defmodule KitchenRecipeWeb.Components.PeopleSuggestion do
   alias KitchenRecipe.Accounts
 
   def mount(socket) do
-    top_users = Accounts.get_top_users_by_recipe_followers(3)
+    {:ok, socket}
+  end
+
+  def update(assigns, socket) do
+    current_user_id = assigns.current_user_id
+    top_users = Accounts.get_top_users_by_recipe_followers(current_user_id, 3)
     {:ok, assign(socket, top_users: top_users)}
   end
 

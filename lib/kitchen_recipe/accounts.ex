@@ -383,12 +383,36 @@ defmodule KitchenRecipe.Accounts do
     |> Repo.one()
   end
 
-  def get_top_users_by_recipe_followers(limit \\ 3) do
+  def follow_user(follower_id, followed_id) do
+    %UserFollower{}
+    |> UserFollower.changeset(%{follower_user_id: follower_id, followed_user_id: followed_id})
+    |> Repo.insert()
+  end
+
+  def unfollow_user(follower_id, followed_id) do
+    UserFollower
+    |> Repo.get_by(follower_user_id: follower_id, followed_user_id: followed_id)
+    |> Repo.delete()
+  end
+
+  def user_following?(follower_id, followed_id) do
+    query =
+      from(f in UserFollower,
+        where: f.follower_user_id == ^follower_id and f.followed_user_id == ^followed_id
+      )
+
+    query
+    |> Repo.all()
+    |> Enum.count() > 0
+  end
+
+  def get_top_users_by_recipe_followers(user_id, limit \\ 3) do
     from(
       u in User,
-      join: r in Recipe,
+      where: u.id != ^user_id and u.role != :admin,
+      left_join: r in Recipe,
       on: u.id == r.user_id,
-      join: f in UserFollower,
+      left_join: f in UserFollower,
       on: u.id == f.followed_user_id,
       group_by: u.id,
       limit: ^limit,

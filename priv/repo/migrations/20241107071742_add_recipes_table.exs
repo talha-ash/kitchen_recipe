@@ -6,7 +6,7 @@ defmodule KitchenRecipe.Repo.Migrations.AddRecipesTable do
       add :title, :string, null: false
       add :description, :text
       add :serve_time, :integer
-      add :nutrition_facts, {:array, :string}
+      add :nutrition_facts, :string
       add :is_published, :boolean, default: false
       add :deleted_at, :utc_datetime
       add(:video_url, :string)

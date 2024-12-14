@@ -47,13 +47,16 @@ defmodule KitchenRecipe.Recipes do
     query =
       from(
         r in Recipe,
-        preload: [:recipe_images, :user],
+        preload: [:user],
+        join: ri in RecipeImage,
+        on: r.id == ri.recipe_id and ri.is_primary == true,
         left_join: rl in RecipeLike,
         on: r.id == rl.recipe_id,
         left_join: c in RecipeComment,
         on: r.id == c.recipe_id,
-        group_by: r.id,
+        group_by: [r.id, ri.id],
         select_merge: %{
+          recipe_images: ri.image_url,
           likes_count: count(fragment("distinct ?", rl.id)),
           comments_count: count(fragment("distinct ?", c.id)),
           like_by_current_user:

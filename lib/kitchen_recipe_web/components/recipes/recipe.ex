@@ -20,24 +20,26 @@ defmodule KitchenRecipeWeb.Components.Recipes.Recipe do
     ~H"""
     <article class="blog-1">
       <div class="article-img-1">
+        <img class="h-[240px] object-cover" src={@recipe.recipe_images} alt="" />
         <div class="article-header">
           <div class="entry-meta">
             <div class="author-img-wrapper">
               <.user_avatar user={@recipe.user} />
-              <%!-- <img src="/assets/images/main-Avatar.png" alt="" /> --%>
             </div>
             <div class="entry-content">
-              <strong class="author-name">
-                <.user_name user={@recipe.user} />
-              </strong>
-              <span class="entry-date">2h ago</span>
+              <.link href={~p"/profile/#{@recipe.user.id}"}>
+                <strong class="author-name cursor-pointer">
+                  <.user_name user={@recipe.user} />
+                </strong>
+              </.link>
+              <%!-- <span class="entry-date">2h ago</span> --%>
             </div>
           </div>
         </div>
       </div>
       <div class="article-content">
         <div class="content-header">
-          <.link href={~p"/recipe/#{@recipe.id}"}>
+          <.link href={~p"/recipes/#{@recipe.id}"}>
             <h3 class="article-heading cursor-pointer"><%= @recipe.title %></h3>
           </.link>
           <span

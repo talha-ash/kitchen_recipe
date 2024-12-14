@@ -21,7 +21,7 @@ defmodule KitchenRecipe.Recipes.Recipe do
     field :title, :string
     field :description, :string
     field :serve_time, :integer
-    field :nutrition_facts, {:array, :string}
+    field :nutrition_facts, :string
     field :is_published, :boolean
     field :deleted_at, :utc_datetime
     field :video_url, :string
@@ -77,7 +77,6 @@ defmodule KitchenRecipe.Recipes.Recipe do
     %__MODULE__{}
     |> cast(attrs, @recipe_cast_fields)
     |> validate_required(@recipe_required_fields)
-    |> validate_length(:nutrition_facts, min: 1)
     |> Tag.put_assoc_with_recipe(attrs)
     |> Ingredient.put_assoc_with_recipe(attrs)
     |> CookingStep.cast_assoc_with_recipe()
@@ -88,7 +87,6 @@ defmodule KitchenRecipe.Recipes.Recipe do
     recipe
     |> cast(attrs, @recipe_cast_fields)
     |> validate_required(@recipe_required_fields)
-    |> validate_length(:nutrition_facts, min: 1)
     |> CookingStep.cast_assoc_with_recipe()
     |> RecipeImage.cast_assoc_with_recipe()
   end

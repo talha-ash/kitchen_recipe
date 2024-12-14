@@ -1,9 +1,9 @@
 defmodule KitchenRecipeWeb.RecipeCrudLive do
   use KitchenRecipeWeb, :live_view
+  import Support.Uploads, only: [upload_files: 2, put_upload_urls: 3]
   alias KitchenRecipe.Recipes
   alias KitchenRecipe.Recipes
   alias KitchenRecipeWeb.Components.Recipe.{CreateTag, CreateIngredient}
-  import Support.Uploads, only: [upload_files: 3]
 
   def mount(params, _session, socket) do
     live_action = socket.assigns.live_action
@@ -15,7 +15,6 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
 
       :edit ->
         id = Map.get(params, "id") |> Integer.parse()
-        IO.inspect(id, label: "ID")
         socket = prepare_page_data(:edit, id, socket)
         {:ok, socket}
     end
@@ -45,56 +44,18 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
     {:noreply, socket}
   end
 
-  def handle_event("edit-recipe", %{"id" => id}, socket) do
-    id = String.to_integer(id)
-    recipe = Recipes.get_recipe_with_preload(id)
-
-    recipe_changeset =
-      Recipes.Recipe.update_changeset(recipe, %{
-        "tags" => recipe.tags,
-        "ingredients" => recipe.ingredients
-      })
-
-    tags =
-      Recipes.get_tags()
-      |> merge_selection_list(recipe.tags)
-
-    ingredients =
-      Recipes.get_ingredients()
-      |> merge_selection_list(recipe.ingredients)
-
-    recipes = Recipes.get_recipes_by_user(1)
-
-    socket =
-      socket
-      |> assign(
-        form: to_form(recipe_changeset),
-        tags: tags,
-        ingredients: ingredients,
-        recipes: recipes
-      )
-
-    {:noreply, socket}
-  end
-
   def handle_event("validate", %{"recipe" => recipe_params}, socket) do
     current_user = socket.assigns.current_user
-    recipe_params = Map.put(recipe_params, "user_id", current_user.id)
 
-    tags =
-      socket.assigns.tags
-      |> Enum.reduce([], fn tag, acc ->
-        if tag.selected, do: acc ++ [%{id: tag.id}], else: acc
-      end)
+    tags = selected_ids_map(socket.assigns.tags)
 
-    ingredients =
-      socket.assigns.ingredients
-      |> Enum.reduce([], fn ingredient, acc ->
-        if ingredient.selected, do: acc ++ [%{id: ingredient.id}], else: acc
-      end)
+    ingredients = selected_ids_map(socket.assigns.ingredients)
 
-    recipe_params = Map.put(recipe_params, "ingredients", ingredients)
-    recipe_params = Map.put(recipe_params, "tags", tags)
+    recipe_params =
+      recipe_params
+      |> Map.put("ingredients", ingredients)
+      |> Map.put("user_id", current_user.id)
+      |> Map.put("tags", tags)
 
     changeset =
       Recipes.Recipe.validate_changeset(recipe_params)
@@ -104,55 +65,25 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
   end
 
   def handle_event("save", %{"recipe" => recipe_params}, socket) do
-    current_user = socket.assigns.current_user
-    recipe_params = Map.put(recipe_params, "user_id", current_user.id)
+    recipe_params = set_recipe_params(socket, recipe_params)
 
-    tags =
-      socket.assigns.tags
-      |> Enum.reduce([], fn tag, acc ->
-        if tag.selected, do: acc ++ [%{id: tag.id}], else: acc
-      end)
+    save_recipe(socket, recipe_params)
+  end
 
-    ingredients =
-      socket.assigns.ingredients
-      |> Enum.reduce([], fn ingredient, acc ->
-        if ingredient.selected, do: acc ++ [%{id: ingredient.id}], else: acc
-      end)
+  def handle_event("cancel-upload", %{"ref" => ref, "field-name" => "recipe_images"}, socket) do
+    {:noreply, cancel_upload(socket, :recipe_images, ref)}
+  end
 
-    video_path = "#{current_user.id}/#{recipe_params["id"]}/video"
-    video_url = upload_files(socket, :recipe_video, video_path) |> Enum.at(0)
+  def handle_event(
+        "cancel-upload",
+        %{"ref" => ref, "field-name" => "recipe_primary_image"},
+        socket
+      ) do
+    {:noreply, cancel_upload(socket, :recipe_primary_image, ref)}
+  end
 
-    images_path = "#{current_user.id}/#{recipe_params["id"]}/images"
-    primary_image_url = upload_files(socket, :recipe_primary_image, images_path) |> Enum.at(0)
-    images_urls = upload_files(socket, :recipe_images, images_path)
-    images_urls = recipe_images_from_upload(primary_image_url, images_urls)
-    recipe_params = Map.put(recipe_params, "ingredients", ingredients)
-    recipe_params = Map.put(recipe_params, "tags", tags)
-    recipe_params = Map.put(recipe_params, "video_url", video_url)
-    recipe_params = Map.put(recipe_params, "recipe_images", images_urls)
-    recipe_id = Map.get(recipe_params, "id")
-
-    case Recipes.create_or_update_recipe(recipe_params, recipe_id) do
-      {:ok, _recipe} ->
-        recipe_changeset =
-          Recipes.Recipe.changeset(
-            %Recipes.Recipe{
-              recipe_images: [%Recipes.RecipeImage{}],
-              cooking_steps: [%Recipes.CookingStep{}],
-              tags: [%Recipes.Tag{}],
-              ingredients: [%Recipes.Ingredient{}]
-            },
-            %{}
-          )
-
-        socket = assign(socket, form: to_form(recipe_changeset))
-        {:noreply, socket}
-
-      {:error, changeset} ->
-        IO.inspect(changeset, label: "Error Changeset")
-        socket = assign(socket, form: to_form(changeset))
-        {:noreply, socket}
-    end
+  def handle_event("cancel-upload", %{"ref" => ref, "field-name" => "recipe_video"}, socket) do
+    {:noreply, cancel_upload(socket, :recipe_video, ref)}
   end
 
   def handle_event("add-nested", param, socket) do
@@ -189,6 +120,78 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
     {:noreply, socket}
   end
 
+  def handle_event("remove-recipe-image", %{"id" => id}, socket) do
+    id = String.to_integer(id)
+    saved_images = Enum.map(socket.assigns.saved_images, &toggle_image(&1, id))
+
+    {:noreply, assign(socket, saved_images: saved_images)}
+  end
+
+  def handle_event("add-recipe-image", %{"id" => id}, socket) do
+    id = String.to_integer(id)
+    saved_images = Enum.map(socket.assigns.saved_images, &toggle_image(&1, id))
+    {:noreply, assign(socket, saved_images: saved_images)}
+  end
+
+  defp save_recipe(socket, recipe_params) do
+    live_action = socket.assigns.live_action
+    current_user = socket.assigns.current_user
+    recipe_id = Map.get(recipe_params, "id")
+
+    case Recipes.create_or_update_recipe(recipe_params, recipe_id) do
+      {:ok, recipe} ->
+        flash_message = if live_action == :new, do: "Recipe Created", else: "Recipe Updated"
+        navigate_to = if live_action == :new, do: ~p"/feed", else: ~p"/recipes/#{recipe.id}"
+
+        video_path = "#{current_user.id}/recipes/videos"
+        images_path = "#{current_user.id}/recipes/images"
+
+        upload_files(socket,
+          recipe_video: video_path,
+          recipe_primary_image: images_path,
+          recipe_images: images_path
+        )
+
+        socket =
+          socket
+          |> assign(form: nil)
+          |> put_flash(:info, flash_message)
+          |> push_navigate(to: navigate_to)
+
+        {:noreply, socket}
+
+      {:error, changeset} ->
+        {:noreply, assign(socket, form: to_form(changeset))}
+    end
+  end
+
+  defp set_recipe_params(socket, recipe_params) do
+    current_user = socket.assigns.current_user
+    saved_images = socket.assigns.saved_images
+    saved_video_url = socket.assigns.saved_video_url
+
+    video_path = "#{current_user.id}/recipes/videos"
+    images_path = "#{current_user.id}/recipes/images"
+
+    video_url = put_upload_urls(socket, :recipe_video, video_path) |> Enum.at(0)
+    primary_image_url = put_upload_urls(socket, :recipe_primary_image, images_path) |> Enum.at(0)
+    images_urls = put_upload_urls(socket, :recipe_images, images_path)
+    all_recipe_images = recipe_images_from_upload(primary_image_url, images_urls, saved_images)
+
+    recipe_params
+    |> Map.put("ingredients", selected_ids_map(socket.assigns.ingredients))
+    |> Map.put("tags", selected_ids_map(socket.assigns.tags))
+    |> Map.put("video_url", video_url || saved_video_url)
+    |> Map.put("recipe_images", all_recipe_images)
+    |> Map.put("user_id", current_user.id)
+  end
+
+  defp toggle_image(%{id: id} = image, target_id) when id == target_id do
+    %{image | del: !image.del}
+  end
+
+  defp toggle_image(image, _id), do: image
+
   defp get_new_nested_field(field) do
     case field do
       "recipe_images" -> {%Recipes.RecipeImage{}, :recipe_images}
@@ -216,9 +219,18 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
     )
   end
 
-  defp recipe_images_from_upload(primary_image, other_images) do
+  defp recipe_images_from_upload(nil, other_images, saved_images) do
+    old_images = Enum.filter(saved_images, &(not &1.del))
+
     Enum.map(other_images, fn image -> %{image_url: image, is_primary: false} end)
-    |> (fn images -> [%{image_url: primary_image, is_primary: true}] ++ images end).()
+    |> (fn images -> images ++ old_images end).()
+  end
+
+  defp recipe_images_from_upload(primary_image, other_images, saved_images) do
+    old_images = Enum.filter(saved_images, &(not &1.del))
+
+    Enum.map(other_images, fn image -> %{image_url: image, is_primary: false} end)
+    |> (fn images -> [%{image_url: primary_image, is_primary: true}] ++ images ++ old_images end).()
   end
 
   defp prepare_page_data(:new, socket) do
@@ -241,7 +253,9 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
     |> assign(
       form: to_form(recipe_changeset),
       tags: tags |> Enum.map(&%{label: &1.name, id: &1.id, selected: false}),
-      ingredients: ingredients |> Enum.map(&%{label: &1.name, id: &1.id, selected: false})
+      ingredients: ingredients |> Enum.map(&%{label: &1.name, id: &1.id, selected: false}),
+      saved_images: [],
+      saved_video_url: nil
     )
   end
 
@@ -275,15 +289,19 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
           Recipes.get_ingredients()
           |> merge_selection_list(recipe.ingredients)
 
-        recipes = Recipes.get_recipes_by_user(1)
-
         socket
         |> add_allow_uploads()
         |> assign(
           form: to_form(recipe_changeset),
           tags: tags,
           ingredients: ingredients,
-          recipes: recipes
+          saved_video_url: recipe.video_url,
+          saved_video_title: recipe.video_title,
+          saved_images:
+            recipe.recipe_images
+            |> Enum.map(
+              &%{id: &1.id, image_url: &1.image_url, is_primary: &1.is_primary, del: false}
+            )
         )
     end
   end
@@ -295,24 +313,11 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
     |> allow_upload(:recipe_video, accept: ~w(.mp4), max_entries: 1)
   end
 
-  # defp upload_files(socket, field, upload_path) do
-  #   uploaded_files =
-  #     consume_uploaded_entries(socket, field, fn %{path: path}, entry ->
-  #       IO.inspect(entry, label: "Entry")
-
-  #       dest =
-  #         Path.join(
-  #           Application.app_dir(:kitchen_recipe, "priv/static/uploads"),
-  #           Path.basename(path)
-  #         )
-
-  #       # You will need to create `priv/static/uploads` for `File.cp!/2` to work.
-  #       File.cp!(path, dest)
-  #       {:ok, ~p"/uploads/#{upload_path}/#{Path.basename(dest)}"}
-  #     end)
-
-  #   uploaded_files
-  # end
+  defp selected_ids_map(list) do
+    Enum.reduce(list, [], fn item, acc ->
+      if item.selected, do: acc ++ [%{id: item.id}], else: acc
+    end)
+  end
 
   defp error_to_string(:too_large), do: "Too large"
   defp error_to_string(:too_many_files), do: "You have selected too many files"
