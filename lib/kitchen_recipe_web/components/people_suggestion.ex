@@ -23,7 +23,7 @@ defmodule KitchenRecipeWeb.Components.PeopleSuggestion do
         <div :for={user <- @top_users} class="blog-card-wrapper">
           <div class="blog-card-content">
             <div class="blog-img-wrapper">
-              <img src="/assets/images/blog-img-1.png" alt="" />
+              <img src="/images/blog-img-1.png" alt="" />
             </div>
             <div class="blog-details">
               <div class="avatar-img-wrapper">

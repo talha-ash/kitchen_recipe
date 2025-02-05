@@ -12,7 +12,7 @@ defmodule KitchenRecipeWeb.Components.Header do
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <!-- Logo -->
           <.link href={~p"/"} class="flex-shrink-0">
-            <img src="/assets/images/scratch-logo.png" alt="scratch-logo" class="h-8" />
+            <img src="/images/scratch-logo.png" alt="scratch-logo" class="h-8" />
           </.link>
           <!-- Search Bar -->
           <form

@@ -50,14 +50,14 @@ defmodule KitchenRecipeWeb.LandingPageLive do
             <!-- Floating Food Images (Optional) -->
             <div class="hidden md:block absolute -bottom-8 left-12 transform rotate-12">
               <img
-                src="./assets/images/Chocolates.png"
+                src="./images/Chocolates.png"
                 alt=""
                 class="w-32 h-32 object-cover rounded-2xl shadow-xl"
               />
             </div>
             <div class="hidden md:block absolute -top-8 right-12 transform -rotate-6">
               <img
-                src="./assets/images/Smoked Carrots & Ginger Mammoth.png"
+                src="./images/Smoked Carrots & Ginger Mammoth.png"
                 alt=""
                 class="w-24 h-24 object-cover rounded-2xl shadow-xl"
               />
