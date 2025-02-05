@@ -15,7 +15,7 @@ defmodule KitchenRecipeWeb.LandingPageLive do
         <nav class="relative z-10 container mx-auto px-4 py-6">
           <div class="max-w-7xl mx-auto flex justify-between items-center">
             <a href="" class="flex-shrink-0">
-              <img src="./assets/images/scratch-logo.png" alt="Scratch Logo" class="h-10" />
+              <img src="./images/scratch-logo.png" alt="Scratch Logo" class="h-10" />
             </a>
           </div>
         </nav>
