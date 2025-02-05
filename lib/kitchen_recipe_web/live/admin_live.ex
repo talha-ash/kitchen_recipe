@@ -19,7 +19,7 @@ defmodule KitchenRecipeWeb.AdminLive do
 
       <form id="upload-form" phx-submit="save" phx-change="validate">
         <div class="flex flex-col gap-4 my-4">
-          <.live_file_input upload={@uploads.upload_images} required={true} />
+          <.live_file_input upload={@uploads.upload_images} />
         </div>
         <button
           class="px-3 py-1.5 text-sm text-white bg-blue-500 rounded hover:bg-blue-600"
