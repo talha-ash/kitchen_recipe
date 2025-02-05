@@ -1,0 +1,144 @@
+<main>
+  <div class="global-wrapper">
+    <div class="global-content container">
+      <div class="left-pane">
+        <.user_detail
+          :if={@user_type == :current_user}
+          current_user={@current_user}
+          user_info={@user_info}
+        />
+        <.other_user_detail
+          :if={@user_type == :other}
+          other_user={@other_user}
+          user_info={@user_info}
+        />
+        <div :if={@user_type == :current_user} class="guide-section spacing">
+          <div class="guide-section-content">
+            <.link href={~p"/users/log_out"} method="delete">
+              <h4>
+                <span>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 16V19H5V5H12V8"
+                      stroke="#363837"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M17 12H9H17Z"
+                      stroke="#363837"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M16 9L18 12L16 15"
+                      stroke="#363837"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+                Log Out
+              </h4>
+            </.link>
+          </div>
+        </div>
+      </div>
+      <!-- center-wrapper -->
+      <div class="global-center-pane">
+        <div class="my-recipes-wrapper">
+          <div class="my-recipes-content">
+            <div class="recipe-header">
+              <h1>My Recipes</h1>
+              <div :if={@user_type == :current_user} class="add-recipe-btn">
+                <button type="button" phx-click={show_modal("add-category")}>
+                  + Add New
+                </button>
+              </div>
+            </div>
+
+            <div class="profile-items-card-holder overflow-auto">
+              <div :for={category <- @recipe_categories} class="item-card-wrapper">
+                <div
+                  class={"item-card-base #{active_category_class(@selected_category_id, category.id)}"}
+                  phx-click="select-category"
+                  phx-value-id={category.id}
+                >
+                  <div class="item-img">
+                    <img src={category.image_url} alt="" />
+                  </div>
+                  <div class="item-entry">
+                    <h4><%= category.name %></h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="main-center-pane overflow-auto">
+          <div :for={recipe <- @recipes} class="recipe-card-wrapper">
+            <div class="recipe-card-base">
+              <div class="recipe-img-wrapper">
+                <img src={recipe.image_url} alt="" />
+              </div>
+              <div class="recipe-content">
+                <h3><%= recipe.title %></h3>
+                <div class="recipe-footer">
+                  <div class="recipe-detail font-styling">
+                    <div>± <%= recipe.serve_time %> mins</div>
+                    <div class="dot"></div>
+                    <div><%= recipe.ingredient_count %> ingredients</div>
+                  </div>
+                  <div class="cook-btn">
+                    <.link href={~p"/recipes/#{recipe.id}"}>
+                      <button type="button">
+                        <svg
+                          width="9"
+                          height="8"
+                          viewBox="0 0 9 8"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M2.32026 7.35981C1.65536 7.69226 0.873047 7.20876 0.873047 6.46538V1.53478C0.873047 0.7914 1.65536 0.307904 2.32026 0.640355L7.25086 3.10566C7.98791 3.47418 7.98791 4.52598 7.25086 4.89451L2.32026 7.35981Z"
+                            stroke="#30BE76"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        Cook
+                      </button>
+                    </.link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div :if={Enum.empty?(@recipes)}>
+            <h1>No Recipe For this category</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <.modal id="add-category">
+    <div>
+      <.live_component
+        module={CreateRecipeCategory}
+        id="add-category-form"
+        current_user_id={@current_user.id}
+      />
+    </div>
+  </.modal>
+</main>

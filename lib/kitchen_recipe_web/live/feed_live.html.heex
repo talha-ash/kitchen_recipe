@@ -1,0 +1,138 @@
+<main class="min-h-screen bg-[#F8F9FC]">
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-12 gap-6">
+      <!-- Left Sidebar -->
+      <aside class="col-span-12 lg:col-span-3 space-y-6">
+        <.user_detail current_user={@current_user} user_info={@user_info} />
+        <.top_recipes top_recipes={@top_recipes} />
+      </aside>
+      <!-- Main Feed -->
+      <div class="col-span-12 lg:col-span-6">
+        <.create_recipe_bar />
+        <!-- Recipe Feed -->
+        <div
+          id="recipes"
+          phx-update="stream"
+          phx-viewport-bottom={!@end_of_timeline? && "load-more-bottom"}
+          phx-viewport-top={@page > 1 && "load-more-top"}
+          phx-page-loading
+          class={[
+            if(@end_of_timeline?, do: "pb-10", else: "pb-[calc(50vh)]"),
+            if(@page == 1, do: "pt-10", else: "pt-[calc(50vh)]"),
+            "space-y-6"
+          ]}
+        >
+          <.live_component
+            :for={{_id, recipe} <- @streams.recipes}
+            module={Recipe}
+            id={"recipe-#{recipe.id}"}
+            recipe={recipe}
+            current_user={@current_user}
+          >
+            <.live_component
+              :if={@people_suggestion_cursor == recipe.id}
+              module={PeopleSuggestion}
+              id="people-suggestion"
+              current_user_id={@current_user.id}
+            />
+          </.live_component>
+        </div>
+        <!-- Loading Indicator -->
+        <div :if={!@end_of_timeline?} class="py-6 text-center">
+          <div class="inline-flex items-center px-4 py-2 bg-white rounded-lg shadow-sm">
+            <div class="mr-2 h-2 w-2 bg-blue-500 rounded-full animate-pulse"></div>
+            <div class="text-sm text-gray-600">Loading...</div>
+          </div>
+        </div>
+      </div>
+      <!-- Right Sidebar -->
+      <%!-- <aside class="hidden lg:block lg:col-span-3 space-y-6">
+        <!-- Live Cooking Section -->
+        <div class="bg-white rounded-xl shadow-sm">
+          <div class="p-5">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Live cooking by scratch</h3>
+            <div class="relative bg-[#EEF2FF] rounded-lg p-4">
+              <div class="flex justify-between items-start">
+                <span class="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                  LIVE
+                </span>
+                <div class="flex space-x-2">
+                  <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <svg
+                      class="w-5 h-5 text-gray-600"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </button>
+                  <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <svg
+                      class="w-5 h-5 text-gray-600"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Most Active Users -->
+        <div class="bg-white rounded-xl shadow-sm p-5">
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Most Active Today</h3>
+          <div class="flex -space-x-2">
+            <img
+              class="inline-block h-10 w-10 rounded-full ring-2 ring-white"
+              src="/assets/images/Avatar-1.png"
+              alt=""
+            />
+            <img
+              class="inline-block h-10 w-10 rounded-full ring-2 ring-white"
+              src="/assets/images/Avatar-2.png"
+              alt=""
+            />
+            <img
+              class="inline-block h-10 w-10 rounded-full ring-2 ring-white"
+              src="/assets/images/Avatar-3.png"
+              alt=""
+            />
+            <img
+              class="inline-block h-10 w-10 rounded-full ring-2 ring-white"
+              src="/assets/images/Avatar-4.png"
+              alt=""
+            />
+            <img
+              class="inline-block h-10 w-10 rounded-full ring-2 ring-white"
+              src="/assets/images/Avatar-5.png"
+              alt=""
+            />
+          </div>
+        </div>
+        <!-- Footer -->
+        <footer class="p-5">
+          <div class="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
+            <a href="" class="hover:text-gray-700">About scratch</a>
+            <a href="" class="hover:text-gray-700">Help Center</a>
+            <a href="" class="hover:text-gray-700">Privacy Policy</a>
+          </div>
+          <p class="text-sm text-gray-400">© scratch by Invision 2019</p>
+        </footer>
+      </aside> --%>
+    </div>
+  </div>
+</main>

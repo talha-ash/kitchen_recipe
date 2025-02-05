@@ -1,0 +1,179 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import "./login.css";
+@import "./signup.css";
+@import "./header.css";
+@import "./feed.css";
+@import "./profile.css";
+@import "./recipe-search.css";
+@import "./recipe.css";
+/* This file is for your main application CSS */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Nunito", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    font-style: normal;
+    background: #f7f8fa;
+}
+
+img {
+    max-width: 100%;
+}
+
+/* main-classes */
+
+.spacing {
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.font-styling {
+    color: #606060;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.57;
+}
+
+.dot {
+    width: 4px;
+    height: 4px;
+    background: #979797;
+    border-radius: 50%;
+}
+
+.green {
+    color: #30be76;
+    letter-spacing: 0.32px;
+}
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Nunito", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+img {
+    max-width: 100%;
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.bg-img-wrapper {
+    background-image: url(./images/Onboarding-bg.png);
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: contain;
+    height: 100vh;
+}
+
+.logo-wrapper {
+    padding: 60px 0;
+}
+
+/* main */
+
+.text-content h1 {
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 1.37;
+    letter-spacing: -0.5px;
+    color: #030f09;
+    margin-top: 32px;
+    width: 495px;
+}
+
+.text-content p {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.57;
+    color: #606060;
+    margin-top: 8px;
+}
+
+.btn-wrapper {
+    margin-top: 40px;
+}
+
+.btn-wrapper a {
+    text-decoration: none;
+    padding: 14px 72px;
+    text-transform: capitalize;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.37;
+    letter-spacing: 0.32px;
+}
+
+.button-primary {
+    background-color: #30be76;
+    border-radius: 8px;
+    color: #ffffff;
+    margin-right: 20px;
+}
+
+.button-secondary {
+    background-color: #ffffff;
+    border: 2px solid #30be76;
+    border-radius: 8px;
+    color: #30be76;
+}
+@keyframes bounce-in {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-25%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce-out {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.recipe-heart-bounce-in {
+    animation: bounce-in 0.5s ease-in-out;
+}
+
+.recipe-heart-bounce-out {
+    animation: bounce-out 0.5s ease-in-out;
+}
+
+.slider {
+    @apply [&::-webkit-slider-runnable-track]:rounded-full
+  [&::-webkit-slider-runnable-track]:bg-black/25
+  [&::-webkit-slider-thumb]:appearance-none
+  [&::-webkit-slider-thumb]:h-5
+  [&::-webkit-slider-thumb]:w-5
+  [&::-webkit-slider-thumb]:rounded-full
+  [&::-webkit-slider-thumb]:bg-[#30be76];
+}

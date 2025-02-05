@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "tailwind-scrollbar": "^3.1.0"
+  },
+  "scripts": {
+    "deploy": "cd .. && mix assets.deploy && rm -f _build/esbuild*"
+  }
+}

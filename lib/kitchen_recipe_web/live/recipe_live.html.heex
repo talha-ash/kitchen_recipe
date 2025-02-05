@@ -1,0 +1,138 @@
+<div class="min-h-screen flex flex-col bg-gray-50">
+  <main class="flex-1 py-8">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-12 gap-8">
+        <!-- Left Side - Images -->
+        <div class="col-span-5">
+          <div class="bg-white rounded-xl shadow-sm p-4">
+            <!-- Main Image -->
+            <div class="mb-4">
+              <img
+                src={@recipe_primary_image}
+                alt=""
+                class="w-full h-[400px] object-cover rounded-lg"
+              />
+            </div>
+            <!-- Image Gallery -->
+            <div class="grid grid-cols-4 gap-2">
+              <%= for image <- @recipe_other_images do %>
+                <div class="aspect-square">
+                  <img
+                    src={image}
+                    alt=""
+                    class="w-full h-full object-cover rounded-lg hover:opacity-75 transition-opacity cursor-pointer"
+                  />
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <!-- Main Content -->
+        <div class="col-span-7 space-y-6">
+          <!-- Header Section -->
+          <div class="bg-white rounded-xl shadow-sm p-6">
+            <div class="flex justify-between items-start mb-6">
+              <h1 class="text-3xl font-bold text-gray-900"><%= @recipe.title %></h1>
+              <button
+                class="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                phx-click={JS.navigate(~p"/recipes/edit/#{@recipe.id}")}
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M19.5603 7.83885C19.5603 6.182 18.2172 4.83885 16.5603 4.83885V4.83885L5.56032 15.8388L5.56032 18.8388L8.56032 18.8388L19.5603 7.83885V7.83885Z" />
+                </svg>
+                Edit Recipe
+              </button>
+            </div>
+            <!-- Ingredients -->
+            <div>
+              <h2 class="text-xl font-semibold mb-4">Ingredients</h2>
+              <div class="grid grid-cols-2 gap-4">
+                <%= for ingredient <- @recipe.ingredients do %>
+                  <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <img
+                      src={ingredient.image_url}
+                      alt=""
+                      class="w-12 h-12 rounded-full object-cover"
+                    />
+                    <span class="text-gray-700"><%= ingredient.name %></span>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <!-- Video and Instructions -->
+          <div class="bg-white rounded-xl shadow-sm p-6">
+            <div class="grid grid-cols-2 gap-8">
+              <!-- Video Section -->
+              <div>
+                <h2 class="text-xl font-semibold mb-4">Recipe Video</h2>
+                <div class="relative rounded-lg overflow-hidden">
+                  <video
+                    controls
+                    class="w-full aspect-video object-cover"
+                    poster={@recipe_primary_image}
+                  >
+                    <source src={@recipe.video_url} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              </div>
+              <!-- Instructions -->
+              <div>
+                <h2 class="text-xl font-semibold mb-4">How to Cook</h2>
+                <ol class="space-y-4">
+                  <%= for cooking_step <- @recipe.cooking_steps do %>
+                    <li class="flex gap-4">
+                      <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded-full">
+                        <%= cooking_step.step_number %>
+                      </span>
+                      <p class="text-gray-700 pt-1"><%= cooking_step.instruction %></p>
+                    </li>
+                  <% end %>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <!-- Additional Information -->
+          <div class="bg-white rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold mb-4">Additional Information</h2>
+            <div class="grid grid-cols-3 gap-6">
+              <!-- Serving Time -->
+              <div>
+                <h3 class="text-sm font-medium text-gray-500 mb-1">Serving Time</h3>
+                <p class="text-lg text-gray-900"><%= @recipe.serve_time %> Minutes</p>
+              </div>
+              <!-- Tags -->
+              <div>
+                <h3 class="text-sm font-medium text-gray-500 mb-1">Tags</h3>
+                <div class="flex flex-wrap gap-2">
+                  <%= for tag <- @recipe.tags do %>
+                    <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                      <%= tag.name %>
+                    </span>
+                  <% end %>
+                </div>
+              </div>
+              <!-- Nutrition Facts -->
+              <div>
+                <h3 class="text-sm font-medium text-gray-500 mb-1">Nutrition Facts</h3>
+                <ul class="list-disc list-inside text-gray-700">
+                  <%= for nutrition_fact <- String.split(@recipe.nutrition_facts, ",") do %>
+                    <li class="text-sm"><%= nutrition_fact %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
