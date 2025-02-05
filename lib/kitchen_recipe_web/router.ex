@@ -63,6 +63,7 @@ defmodule KitchenRecipeWeb.Router do
     live_session :require_authenticated_user,
       on_mount: [{KitchenRecipeWeb.UserAuth, :ensure_authenticated}] do
       live "/feed", FeedLive
+      live "/admin", AdminLive
       live "/recipes/new", RecipeCrudLive, :new
       live "/recipes/edit/:id", RecipeCrudLive, :edit
       live "/recipes/:id", RecipeLive
