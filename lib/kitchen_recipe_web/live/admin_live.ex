@@ -6,7 +6,7 @@ defmodule KitchenRecipeWeb.AdminLive do
     socket =
       socket
       |> assign(:uploaded_files, [])
-      |> allow_upload(:upload_images, accept: ~w(.jpg .jpeg .png), max_entries: 2)
+      |> allow_upload(:upload_images, accept: ~w(.jpg .jpeg .png), max_entries: 10)
 
     {:ok, socket}
   end
