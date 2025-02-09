@@ -150,12 +150,13 @@ defmodule KitchenRecipeWeb.UserRegistrationLive do
   def handle_event("save", %{"user" => user_params}, socket) do
     case Accounts.register_user(user_params) do
       {:ok, user} ->
-        # Accounts.deliver_user_confirmation_instructions(
-        #   user,
-        #   &url(~p"/users/confirm/#{&1}")
-        # )
-        {:ok, _} =
-          avatar_path = "#{user.id}/avatar"
+        # {:ok, _} =
+        #   Accounts.deliver_user_confirmation_instructions(
+        #     user,
+        #     &url(~p"/users/confirm/#{&1}")
+        #   )
+
+        avatar_path = "#{user.id}/avatar"
 
         avatar_url =
           Uploads.upload_files(socket, :avatar, avatar_path)
