@@ -7,7 +7,7 @@ defmodule KitchenRecipeWeb.Components.Recipe.Components do
     ~H"""
     <div class="create-recipe-bar-wrapper spacing">
       <div class="create-recipe-bar-content">
-        <strong class="font-styling">286 of your followers are online</strong>
+        <%!-- <strong class="font-styling">286 of your followers are online</strong> --%>
         <div class="create-recipe-button-wrapper">
           <.link href={~p"/recipes/new"}>Create Recipe</.link>
         </div>
