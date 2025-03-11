@@ -267,6 +267,7 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
 
   defp prepare_page_data(:edit, {id, _}, socket) do
     recipe = Recipes.get_recipe_with_preload(id)
+    user_id = socket.assigns.current_user.id
 
     case recipe do
       nil ->
@@ -275,34 +276,40 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
         |> push_navigate(to: "/", replace: true)
 
       _ ->
-        recipe_changeset =
-          Recipes.Recipe.update_changeset(recipe, %{
-            "tags" => recipe.tags,
-            "ingredients" => recipe.ingredients
-          })
+        if user_id != recipe.user_id do
+          socket
+          |> put_flash(:error, "Not Allowed")
+          |> push_navigate(to: "/", replace: true)
+        else
+          recipe_changeset =
+            Recipes.Recipe.update_changeset(recipe, %{
+              "tags" => recipe.tags,
+              "ingredients" => recipe.ingredients
+            })
 
-        tags =
-          Recipes.get_tags()
-          |> merge_selection_list(recipe.tags)
+          tags =
+            Recipes.get_tags()
+            |> merge_selection_list(recipe.tags)
 
-        ingredients =
-          Recipes.get_ingredients()
-          |> merge_selection_list(recipe.ingredients)
+          ingredients =
+            Recipes.get_ingredients()
+            |> merge_selection_list(recipe.ingredients)
 
-        socket
-        |> add_allow_uploads()
-        |> assign(
-          form: to_form(recipe_changeset),
-          tags: tags,
-          ingredients: ingredients,
-          saved_video_url: recipe.video_url,
-          saved_video_title: recipe.video_title,
-          saved_images:
-            recipe.recipe_images
-            |> Enum.map(
-              &%{id: &1.id, image_url: &1.image_url, is_primary: &1.is_primary, del: false}
-            )
-        )
+          socket
+          |> add_allow_uploads()
+          |> assign(
+            form: to_form(recipe_changeset),
+            tags: tags,
+            ingredients: ingredients,
+            saved_video_url: recipe.video_url,
+            saved_video_title: recipe.video_title,
+            saved_images:
+              recipe.recipe_images
+              |> Enum.map(
+                &%{id: &1.id, image_url: &1.image_url, is_primary: &1.is_primary, del: false}
+              )
+          )
+        end
     end
   end
 
