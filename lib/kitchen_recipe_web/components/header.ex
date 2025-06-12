@@ -1,4 +1,4 @@
-defmodule KitchenRecipeWeb.Components.Header do
+defmodule KitchenRecipeWeb.Header do
   use KitchenRecipeWeb, :live_component
 
   def mount(socket) do

@@ -1,4 +1,4 @@
-defmodule KitchenRecipeWeb.Components.Recipe.Components do
+defmodule KitchenRecipeWeb.Recipe.Components do
   use Phoenix.Component
   use KitchenRecipeWeb, :verified_routes
   import KitchenRecipeWeb.CoreComponents

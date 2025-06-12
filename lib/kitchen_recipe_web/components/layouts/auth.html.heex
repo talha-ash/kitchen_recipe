@@ -1,15 +1,21 @@
-<section class="login-bg-wrapper">
-  <main class="global-card-wrapper">
-    <div class="login-card-wrapper">
-      <div class="login-card-content">
-        <div class="scratch-logo-wrapper">
-          <div class="scratch-logo-content">
-            <img src={~p"/images/scratch-logo.png"} alt="" />
+<section class="login-bg-wrapper h-screen bg-no-repeat bg-cover">
+  <main class="h-full flex items-center justify-center p-4 bg-gradient-to-b from-white/0 via-white/5 to-white">
+    <div class="bg-white rounded-lg shadow-[0px_6px_20px_rgba(13,51,32,0.1)] overflow-hidden w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-[1000px]">
+      <div class="flex flex-col lg:flex-row min-h-[500px] md:min-h-[570px]">
+        <div class="scratch-logo-wrapper w-full h-48 sm:h-56 lg:h-auto lg:w-2/3	 bg-no-repeat bg-cover">
+          <div class="h-full flex items-center justify-center bg-gradient-to-b from-white/[.437555] via-white/80 to-white p-4">
+            <img
+              src={~p"/images/scratch-logo.png"}
+              alt="Scratch Logo"
+              class="w-24 h-24 object-contain"
+            />
           </div>
         </div>
 
-        <.flash_group flash={@flash} />
-        <%= @inner_content %>
+        <div class="w-full lg:w-2/3 flex flex-col justify-center p-6 sm:p-8 md:p-10 lg:p-[60px]">
+          <.flash_group flash={@flash} />
+          <%= @inner_content %>
+        </div>
       </div>
     </div>
   </main>

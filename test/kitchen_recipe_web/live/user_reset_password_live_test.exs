@@ -97,7 +97,7 @@ defmodule KitchenRecipeWeb.UserResetPasswordLiveTest do
         |> render_click()
         |> follow_redirect(conn, ~p"/users/log_in")
 
-      assert conn.resp_body =~ "Log in"
+      assert conn.resp_body =~ "Please login to continue"
     end
 
     test "redirects to registration page when the Register button is clicked", %{
@@ -112,7 +112,7 @@ defmodule KitchenRecipeWeb.UserResetPasswordLiveTest do
         |> render_click()
         |> follow_redirect(conn, ~p"/users/register")
 
-      assert conn.resp_body =~ "Register"
+      assert conn.resp_body =~ "Create account to continue"
     end
   end
 end

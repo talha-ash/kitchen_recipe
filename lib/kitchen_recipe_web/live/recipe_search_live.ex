@@ -1,7 +1,7 @@
 defmodule KitchenRecipeWeb.RecipeSearchLive do
   use KitchenRecipeWeb, :live_view
   alias KitchenRecipe.{Accounts, Recipes}
-
+  import KitchenRecipeWeb.SearchRecipe.Components
   @search_context_recipe "recipe"
   @search_context_profile "profile"
   @search_context_none ""

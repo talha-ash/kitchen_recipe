@@ -1,7 +1,7 @@
 <main>
-  <div class="global-wrapper">
-    <div class="global-content container">
-      <div class="left-pane">
+  <div class="bg-gradient-to-b from-white/80 to-[#f7f8fa]">
+    <div class="container mx-auto py-[50px] flex flex-col md:flex-row">
+      <div class="px-2.5 w-full md:flex-grow-0 md:flex-shrink-0 md:basis-1/4 md:max-w-1/4 mb-6 md:mb-0">
         <.user_detail
           :if={@user_type == :current_user}
           current_user={@current_user}
@@ -12,11 +12,11 @@
           other_user={@other_user}
           user_info={@user_info}
         />
-        <div :if={@user_type == :current_user} class="guide-section spacing">
-          <div class="guide-section-content">
+        <div :if={@user_type == :current_user} class="my-6">
+          <div class="">
             <.link href={~p"/users/log_out"} method="delete">
-              <h4>
-                <span>
+              <h4 class="text-[#030f09] flex items-center font-normal text-base leading-[1.37]">
+                <span class="mr-[15px]">
                   <svg
                     width="24"
                     height="24"
@@ -52,31 +52,45 @@
           </div>
         </div>
       </div>
-      <!-- center-wrapper -->
-      <div class="global-center-pane">
-        <div class="my-recipes-wrapper">
-          <div class="my-recipes-content">
-            <div class="recipe-header">
-              <h1>My Recipes</h1>
-              <div :if={@user_type == :current_user} class="add-recipe-btn">
-                <button type="button" phx-click={show_modal("add-category")}>
+      <div class="px-2.5 w-full md:flex-grow-0 md:flex-shrink-0 md:basis-3/4 md:max-w-3/4">
+        <div class="pl-[25px] mb-5">
+          <div class="">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-[45px]">
+              <h1 class="font-bold text-[32px] leading-8 text-[#030f09] mb-4 sm:mb-0">
+                My Recipes
+              </h1>
+              <div :if={@user_type == :current_user} class="">
+                <button
+                  type="button"
+                  phx-click={show_modal("add-category")}
+                  class="bg-white border-2 border-[#30be76] rounded-lg text-[#30be76] tracking-[0.32px] font-bold text-base leading-[1.37] py-1.5 px-5 self-start sm:self-auto"
+                >
                   + Add New
                 </button>
               </div>
             </div>
 
-            <div class="profile-items-card-holder overflow-auto">
-              <div :for={category <- @recipe_categories} class="item-card-wrapper">
+            <div class="flex -mx-[10px] overflow-x-auto pb-2">
+              <div
+                :for={category <- @recipe_categories}
+                class="px-2 flex-grow-0 flex-shrink-0 basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6"
+              >
                 <div
-                  class={"item-card-base #{active_category_class(@selected_category_id, category.id)}"}
+                  class={"bg-white rounded-lg shadow-[0px_6px_20px_rgba(13,51,32,0.1)] overflow-hidden h-full flex flex-col #{active_category_class(@selected_category_id, category.id)}"}
                   phx-click="select-category"
                   phx-value-id={category.id}
                 >
-                  <div class="item-img">
-                    <img src={category.image_url} alt="" />
+                  <div class="w-full">
+                    <img
+                      src={category.image_url}
+                      alt=""
+                      class="w-full h-24 sm:h-28 md:h-32 object-cover"
+                    />
                   </div>
-                  <div class="item-entry">
-                    <h4><%= category.name %></h4>
+                  <div class="text-center p-2 flex-grow">
+                    <h4 class="font-normal text-sm sm:text-base leading-tight sm:leading-[22px] text-[#030f09]">
+                      <%= category.name %>
+                    </h4>
                   </div>
                 </div>
               </div>
@@ -84,29 +98,41 @@
           </div>
         </div>
 
-        <div class="main-center-pane overflow-auto">
-          <div :for={recipe <- @recipes} class="recipe-card-wrapper">
-            <div class="recipe-card-base">
-              <div class="recipe-img-wrapper">
-                <img src={recipe.image_url} alt="" />
+        <div class="flex flex-wrap bg-white rounded-lg p-1 sm:p-3 overflow-auto">
+          <div :for={recipe <- @recipes} class="p-2 sm:p-3 w-full sm:basis-1/2 sm:max-w-1/2">
+            <div class="bg-white rounded-lg overflow-hidden shadow-md h-full flex flex-col">
+              <div class="w-full">
+                <img
+                  src={recipe.image_url}
+                  alt=""
+                  class="w-full h-48 sm:h-56 md:h-64 object-cover"
+                />
               </div>
-              <div class="recipe-content">
-                <h3><%= recipe.title %></h3>
-                <div class="recipe-footer">
-                  <div class="recipe-detail font-styling">
+              <div class="px-3 sm:px-[22px] py-4 flex-grow flex flex-col justify-between">
+                <div>
+                  <h3 class="font-semibold text-base sm:text-lg leading-snug sm:leading-[1.77] text-[#030f09] mb-2">
+                    <%= recipe.title %>
+                  </h3>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-2">
+                  <div class="flex items-center text-xs sm:text-sm text-gray-600 mb-2 sm:mb-0">
                     <div>± <%= recipe.serve_time %> mins</div>
-                    <div class="dot"></div>
+                    <div class="w-1 h-1 bg-[#979797] rounded-full mx-1.5 sm:mx-2.5"></div>
                     <div><%= recipe.ingredient_count %> ingredients</div>
                   </div>
-                  <div class="cook-btn">
+                  <div class="">
                     <.link href={~p"/recipes/#{recipe.id}"}>
-                      <button type="button">
+                      <button
+                        type="button"
+                        class="flex items-center bg-white border border-[#30be76] rounded text-[#30be76] tracking-[0.4px] font-bold text-xs sm:text-sm leading-tight sm:leading-[1.28] py-1 px-2 sm:pl-2.5 sm:pr-2 self-start sm:self-auto"
+                      >
                         <svg
                           width="9"
                           height="8"
                           viewBox="0 0 9 8"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
+                          class="mr-1 sm:mr-1.5"
                         >
                           <path
                             fill-rule="evenodd"
@@ -125,8 +151,8 @@
               </div>
             </div>
           </div>
-          <div :if={Enum.empty?(@recipes)}>
-            <h1>No Recipe For this category</h1>
+          <div :if={Enum.empty?(@recipes)} class="w-full text-center py-10">
+            <h1 class="text-xl text-gray-700">No Recipe For this category</h1>
           </div>
         </div>
       </div>

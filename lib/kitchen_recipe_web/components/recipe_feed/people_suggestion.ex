@@ -1,4 +1,4 @@
-defmodule KitchenRecipeWeb.Components.PeopleSuggestion do
+defmodule KitchenRecipeWeb.RecipeFeed.PeopleSuggestion do
   use KitchenRecipeWeb, :live_component
   alias KitchenRecipe.Accounts
 
@@ -14,7 +14,7 @@ defmodule KitchenRecipeWeb.Components.PeopleSuggestion do
 
   def render(assigns) do
     ~H"""
-    <section class="suggested-articles-holder">
+    <section class="suggested-articles-holder !px-2">
       <div class="suggestions-header">
         <h4>People you might want to follow</h4>
         <h4 class="green">See all Suggestion</h4>
@@ -29,7 +29,9 @@ defmodule KitchenRecipeWeb.Components.PeopleSuggestion do
               <div class="avatar-img-wrapper">
                 <img src={user.avatar_url} alt="" />
               </div>
-              <h4><%= user.fullname || user.username %></h4>
+              <.link href={~p"/profile/#{user.id}"}>
+                <h4><%= user.fullname || user.username %></h4>
+              </.link>
               <div class="blog-footer">
                 <div class="group-2">
                   <strong><%= user.recipes_count %></strong>

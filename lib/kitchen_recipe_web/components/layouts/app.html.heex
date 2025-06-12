@@ -24,13 +24,16 @@
     </div>
   </div>
 </header> --%>
-<.live_component
-  module={KitchenRecipeWeb.Components.Header}
-  id="header"
-  current_user={@current_user}
-  recipe_search_page={Map.has_key?(assigns, :recipe_search_page)}
-  search_query={Map.get(assigns, :search_query, "")}
-/>
+<%= if @current_user do %>
+  <.live_component
+    module={KitchenRecipeWeb.Header}
+    id="header"
+    current_user={@current_user}
+    recipe_search_page={Map.has_key?(assigns, :recipe_search_page)}
+    search_query={Map.get(assigns, :search_query, "")}
+  />
+<% end %>
+
 <main>
   <div>
     <.flash_group flash={@flash} />

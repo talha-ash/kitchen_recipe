@@ -5,12 +5,26 @@ defmodule KitchenRecipe.AccountsFixtures do
   """
 
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
+  def unique_username, do: "user#{System.unique_integer()}"
+  def unique_fullname, do: "user#{System.unique_integer()} user#{System.unique_integer()}"
   def valid_user_password, do: "hello world!"
 
   def valid_user_attributes(attrs \\ %{}) do
     Enum.into(attrs, %{
       email: unique_user_email(),
-      password: valid_user_password()
+      password: valid_user_password(),
+      username: unique_username(),
+      fullname: unique_fullname(),
+      avatar_url: "fake_url"
+    })
+  end
+
+  def valid_user_attributes_without_avatar(attrs \\ %{}) do
+    Enum.into(attrs, %{
+      email: unique_user_email(),
+      password: valid_user_password(),
+      username: unique_username(),
+      fullname: unique_fullname()
     })
   end
 

@@ -1,4 +1,4 @@
-defmodule KitchenRecipeWeb.Components.Sidebar do
+defmodule KitchenRecipeWeb.Sidebar do
   use Phoenix.Component
   use KitchenRecipeWeb, :verified_routes
 
@@ -105,12 +105,15 @@ defmodule KitchenRecipeWeb.Components.Sidebar do
     ~H"""
     <div class="stats-top-list-wrapper spacing">
       <div class="stats-top-list-content">
-        <h4>Top 5 Recipe today</h4>
         <.async_result :let={top_recipes} assign={@top_recipes}>
+          <h4>Top 5 Recipe today</h4>
           <:loading>Loading Recipes...</:loading>
+          <h1 :if={length(top_recipes) == 0}>No Recipe Found</h1>
           <ul class="font-styling listing">
             <li :for={recipe <- top_recipes}>
-              <a href=""><%= recipe.title %></a>
+              <.link href={~p"/recipes/#{recipe.id}"}>
+                <%= recipe.title %>
+              </.link>
             </li>
           </ul>
         </.async_result>

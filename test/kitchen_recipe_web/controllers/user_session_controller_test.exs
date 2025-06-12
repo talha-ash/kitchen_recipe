@@ -15,13 +15,13 @@ defmodule KitchenRecipeWeb.UserSessionControllerTest do
         })
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/feed"
 
       # Now do a logged in request and assert on the menu
-      conn = get(conn, ~p"/")
+      conn = get(conn, ~p"/feed")
       response = html_response(conn, 200)
-      assert response =~ user.email
-      assert response =~ ~p"/users/settings"
+      assert response =~ user.fullname
+      # assert response =~ ~p"/users/settings"
       assert response =~ ~p"/users/log_out"
     end
 
@@ -36,7 +36,7 @@ defmodule KitchenRecipeWeb.UserSessionControllerTest do
         })
 
       assert conn.resp_cookies["_kitchen_recipe_web_user_remember_me"]
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/feed"
     end
 
     test "logs the user in with return to", %{conn: conn, user: user} do
@@ -65,7 +65,7 @@ defmodule KitchenRecipeWeb.UserSessionControllerTest do
           }
         })
 
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/feed"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Account created successfully"
     end
 

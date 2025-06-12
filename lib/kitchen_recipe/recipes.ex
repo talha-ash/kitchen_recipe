@@ -100,9 +100,9 @@ defmodule KitchenRecipe.Recipes do
         join: rl in RecipeLike,
         on: rl.recipe_id == r.id,
         group_by: [r.id],
-        order_by: [desc: count(rl.id)],
+        order_by: [desc: count(r.id)],
         # where: fragment("?::date = ?::date", r.updated_at, type(^date, :naive_datetime)),
-        where: fragment("DATE(?)", r.updated_at) == ^date,
+        where: fragment("DATE(?)", rl.updated_at) == ^date,
         limit: ^limit,
         select: %{id: r.id, title: r.title, user_id: r.user_id, likes_count: count(rl.id)}
       )

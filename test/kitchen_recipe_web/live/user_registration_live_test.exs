@@ -8,8 +8,8 @@ defmodule KitchenRecipeWeb.UserRegistrationLiveTest do
     test "renders registration page", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/register")
 
-      assert html =~ "Register"
-      assert html =~ "Log in"
+      assert html =~ "Create account to continue"
+      assert html =~ "Login Here"
     end
 
     test "redirects if already logged in", %{conn: conn} do
@@ -17,7 +17,7 @@ defmodule KitchenRecipeWeb.UserRegistrationLiveTest do
         conn
         |> log_in_user(user_fixture())
         |> live(~p"/users/register")
-        |> follow_redirect(conn, "/")
+        |> follow_redirect(conn, "/feed")
 
       assert {:ok, _conn} = result
     end
@@ -30,7 +30,7 @@ defmodule KitchenRecipeWeb.UserRegistrationLiveTest do
         |> element("#registration_form")
         |> render_change(user: %{"email" => "with spaces", "password" => "too short"})
 
-      assert result =~ "Register"
+      assert result =~ "Create account to continue"
       assert result =~ "must have the @ sign and no spaces"
       assert result =~ "should be at least 12 character"
     end
@@ -40,19 +40,36 @@ defmodule KitchenRecipeWeb.UserRegistrationLiveTest do
     test "creates account and logs the user in", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 
-      email = unique_user_email()
-      form = form(lv, "#registration_form", user: valid_user_attributes(email: email))
+      fullname = unique_fullname()
+
+      file =
+        file_input(lv, "#registration_form", :avatar, [
+          %{
+            last_modified: ~c"1_624_366_053_000",
+            name: "test_avatar.png",
+            content: File.read!("./test/support/test_avatar.png"),
+            type: "image/png"
+          }
+        ])
+
+      render_upload(file, "test_avatar.png")
+
+      form =
+        form(lv, "#registration_form",
+          user: valid_user_attributes_without_avatar(fullname: fullname)
+        )
+
       render_submit(form)
       conn = follow_trigger_action(form, conn)
 
-      assert redirected_to(conn) == ~p"/"
+      assert redirected_to(conn) == ~p"/feed"
 
       # Now do a logged in request and assert on the menu
-      conn = get(conn, "/")
+      conn = get(conn, "/feed")
       response = html_response(conn, 200)
-      assert response =~ email
-      assert response =~ "Settings"
-      assert response =~ "Log out"
+      assert response =~ fullname
+      # assert response =~ "Settings"
+      assert response =~ "Sign out"
     end
 
     test "renders errors for duplicated email", %{conn: conn} do
@@ -77,11 +94,11 @@ defmodule KitchenRecipeWeb.UserRegistrationLiveTest do
 
       {:ok, _login_live, login_html} =
         lv
-        |> element(~s|main a:fl-contains("Log in")|)
+        |> element(~s|main a:fl-contains("Login Here")|)
         |> render_click()
         |> follow_redirect(conn, ~p"/users/log_in")
 
-      assert login_html =~ "Log in"
+      assert login_html =~ "Please login to continue"
     end
   end
 end

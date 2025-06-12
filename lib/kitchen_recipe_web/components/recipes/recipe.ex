@@ -1,6 +1,6 @@
-defmodule KitchenRecipeWeb.Components.Recipes.Recipe do
+defmodule KitchenRecipeWeb.Recipes.Recipe do
   use KitchenRecipeWeb, :live_component
-  import KitchenRecipeWeb.Components.Recipe.Components, only: [recipe_comments: 1]
+  import KitchenRecipeWeb.Recipe.Components, only: [recipe_comments: 1]
   alias KitchenRecipe.{Recipes, Repo}
   alias KitchenRecipe.Recipes.RecipeComment
 
@@ -80,31 +80,6 @@ defmodule KitchenRecipeWeb.Components.Recipes.Recipe do
             <div class="dot"></div>
             <button phx-click="toggle-comments" phx-target={@myself} class="font-styling">
               <%= @recipe.comments_count %> Comments
-            </button>
-          </div>
-          <div class="article-btn">
-            <button type="submit">
-              <svg
-                width="15"
-                height="14"
-                viewBox="0 0 15 14"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M7.54232 2.91675V11.0834"
-                  stroke="#30BE76"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M3.45898 6.99992H11.6257"
-                  stroke="#30BE76"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Save
             </button>
           </div>
         </div>

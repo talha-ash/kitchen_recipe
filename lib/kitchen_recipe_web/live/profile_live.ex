@@ -1,7 +1,7 @@
 defmodule KitchenRecipeWeb.ProfileLive do
   use KitchenRecipeWeb, :live_view
-  import KitchenRecipeWeb.Components.Sidebar, only: [user_detail: 1, other_user_detail: 1]
-  alias KitchenRecipeWeb.Components.Recipe.CreateRecipeCategory
+  import KitchenRecipeWeb.Sidebar, only: [user_detail: 1, other_user_detail: 1]
+  alias KitchenRecipeWeb.Recipe.CreateRecipeCategory
   alias KitchenRecipe.Accounts
   alias KitchenRecipe.Recipes
 
@@ -35,8 +35,8 @@ defmodule KitchenRecipeWeb.ProfileLive do
 
   def handle_event("select-category", %{"id" => id}, socket) do
     id = String.to_integer(id)
-    visit_user_id = socket.assigns.visit_user_id
-    recipes = Recipes.get_user_recipes_by_category(id, visit_user_id)
+    other_user = socket.assigns.other_user
+    recipes = Recipes.get_user_recipes_by_category(id, other_user.id)
     socket = socket |> assign(recipes: recipes) |> assign(selected_category_id: id)
     {:noreply, socket}
   end

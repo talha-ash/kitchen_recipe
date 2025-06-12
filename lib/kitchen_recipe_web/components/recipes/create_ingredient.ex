@@ -1,4 +1,4 @@
-defmodule KitchenRecipeWeb.Components.Recipe.CreateIngredient do
+defmodule KitchenRecipeWeb.Recipe.CreateIngredient do
   use KitchenRecipeWeb, :live_component
   alias KitchenRecipe.Recipes.Ingredient
   alias KitchenRecipe.Repo

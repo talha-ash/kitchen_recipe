@@ -3,7 +3,7 @@ defmodule KitchenRecipeWeb.RecipeCrudLive do
   import Support.Uploads, only: [upload_files: 2, put_upload_urls: 3]
   alias KitchenRecipe.Recipes
   alias KitchenRecipe.Recipes
-  alias KitchenRecipeWeb.Components.Recipe.{CreateTag, CreateIngredient}
+  alias KitchenRecipeWeb.Recipe.{CreateTag, CreateIngredient}
 
   def mount(params, _session, socket) do
     live_action = socket.assigns.live_action

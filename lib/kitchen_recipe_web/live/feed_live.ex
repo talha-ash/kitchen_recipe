@@ -1,17 +1,17 @@
 defmodule KitchenRecipeWeb.FeedLive do
   use KitchenRecipeWeb, :live_view
-  import KitchenRecipeWeb.Components.Sidebar
-  import KitchenRecipeWeb.Components.Recipe.Components
+  import KitchenRecipeWeb.Sidebar
+  import KitchenRecipeWeb.Recipe.Components
   alias KitchenRecipe.Accounts
   alias KitchenRecipe.Recipes
-  alias KitchenRecipeWeb.Components.PeopleSuggestion
-  alias KitchenRecipeWeb.Components.Recipes.Recipe
+  alias KitchenRecipeWeb.RecipeFeed.PeopleSuggestion
+  alias KitchenRecipeWeb.Recipes.Recipe
 
   def mount(_params, _session, socket) do
     current_user_id = socket.assigns.current_user.id
 
     second_recipe =
-      Recipes.get_recipes_by_user(current_user_id, limit: 1, offset: 1) |> Enum.at(0, %{id: 0})
+      Recipes.get_recipes(current_user_id, limit: 1, offset: 1) |> Enum.at(0, %{id: 0})
 
     socket =
       socket

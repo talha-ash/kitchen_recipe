@@ -1,4 +1,4 @@
-defmodule KitchenRecipeWeb.Components.Recipe.CreateTag do
+defmodule KitchenRecipeWeb.Recipe.CreateTag do
   use KitchenRecipeWeb, :live_component
   alias KitchenRecipe.Recipes.Tag
   alias KitchenRecipe.Repo

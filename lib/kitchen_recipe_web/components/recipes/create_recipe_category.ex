@@ -1,4 +1,4 @@
-defmodule KitchenRecipeWeb.Components.Recipe.CreateRecipeCategory do
+defmodule KitchenRecipeWeb.Recipe.CreateRecipeCategory do
   use KitchenRecipeWeb, :live_component
   alias KitchenRecipe.Recipes.RecipeCategory
   alias KitchenRecipe.Repo

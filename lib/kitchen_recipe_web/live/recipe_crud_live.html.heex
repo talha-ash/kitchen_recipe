@@ -1,22 +1,24 @@
-<div class="min-h-screen bg-gray-50 py-8">
-  <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-2xl p-8">
+<div class="min-h-screen bg-gray-50 py-4 px-4 sm:py-8">
+  <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-2xl p-4 sm:p-6 lg:p-8">
     <!-- Header -->
-    <div class="border-b pb-6 mb-8">
+    <div class="border-b pb-4 sm:pb-6 mb-6 sm:mb-8">
       <div :if={@live_action == :edit}>
-        <h1 class="text-3xl font-bold text-gray-900">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
           Edit Recipe
         </h1>
-        <p class="mt-2 text-gray-600">Modify recipe details</p>
+        <p class="mt-2 text-gray-600 text-sm sm:text-base">Modify recipe details</p>
       </div>
       <div :if={@live_action == :new}>
-        <h1 class="text-3xl font-bold text-gray-900">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
           Create Recipe
         </h1>
-        <p class="mt-2 text-gray-600">Fill in the details to create your recipe</p>
+        <p class="mt-2 text-gray-600 text-sm sm:text-base">
+          Fill in the details to create your recipe
+        </p>
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-6 mb-12">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12">
       <.live_component module={CreateTag} id="create-tag" />
       <.live_component module={CreateIngredient} id="create-ingredient" />
     </div>
@@ -26,13 +28,13 @@
       for={@form}
       phx-submit="save"
       phx-change="validate"
-      class="space-y-8"
+      class="space-y-6 sm:space-y-8"
     >
       <.input field={@form[:id]} type="hidden" value={@form[:id].value} />
       <!-- Basic Info Card -->
-      <div class="bg-white rounded-xl border p-6 space-y-6">
-        <h2 class="text-xl font-semibold text-gray-800">Basic Information</h2>
-        <div class="grid grid-cols-2 gap-6">
+      <div class="bg-white rounded-xl border p-4 sm:p-6 space-y-4 sm:space-y-6">
+        <h2 class="text-lg sm:text-xl font-semibold text-gray-800">Basic Information</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           <.input field={@form[:title]} placeholder="Enter recipe title" label="Title" />
           <.input
             field={@form[:serve_time]}
@@ -40,34 +42,38 @@
             type="number"
             label="Serve Time"
           />
-          <div class="col-span-2">
+          <div class="sm:col-span-2">
             <.input
               field={@form[:description]}
               placeholder="Enter recipe description"
               label="Description"
             />
           </div>
-          <.input
-            field={@form[:nutrition_facts]}
-            name="recipe[nutrition_facts]"
-            placeholder="222 calories, 6.2 g fat, 7.2 g carbonhydrates"
-            label="Nutrition Facts(Comma Seperated)"
-          />
-          <.input
-            field={@form[:recipe_category_id]}
-            type="select"
-            options={[{"Breakfast", 1}, {"Lunch", 2}, {"Dinner", 3}]}
-            label="Recipe Category"
-          />
-          <div class="flex items-center space-x-4">
+          <div class="sm:col-span-1">
+            <.input
+              field={@form[:nutrition_facts]}
+              name="recipe[nutrition_facts]"
+              placeholder="222 calories, 6.2 g fat, 7.2 g carbonhydrates"
+              label="Nutrition Facts(Comma Seperated)"
+            />
+          </div>
+          <div class="sm:col-span-1">
+            <.input
+              field={@form[:recipe_category_id]}
+              type="select"
+              options={[{"Breakfast", 1}, {"Lunch", 2}, {"Dinner", 3}]}
+              label="Recipe Category"
+            />
+          </div>
+          <div class="flex items-center space-x-4 sm:col-span-2">
             <.input field={@form[:is_published]} type="checkbox" label="Is Published" />
           </div>
         </div>
       </div>
       <!-- Video Section -->
-      <div class="bg-white rounded-xl border p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-6">Recipe Video</h2>
-        <div class="grid grid-cols-2 gap-8">
+      <div class="bg-white rounded-xl border p-4 sm:p-6">
+        <h2 class="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-6">Recipe Video</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           <div>
             <.input
               field={@form[:video_title]}
@@ -82,11 +88,12 @@
             <%= for entry <- @uploads.recipe_video.entries do %>
               <div class="mt-4 bg-gray-50 rounded-lg p-4">
                 <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-4">
-                    <.live_img_preview entry={entry} class="h-16 w-16 rounded-lg object-cover" />
-                    <div>
-                      <p class="text-sm font-medium text-gray-900"><%= entry.client_name %></p>
-                      <progress value={entry.progress} max="100" class="mt-2">
+                  <div class="flex items-center space-x-4 flex-1 min-w-0">
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-gray-900 truncate">
+                        <%= entry.client_name %>
+                      </p>
+                      <progress value={entry.progress} max="100" class="mt-2 w-full">
                         <%= entry.progress %>%
                       </progress>
                     </div>
@@ -96,7 +103,7 @@
                     phx-click="cancel-upload"
                     phx-value-ref={entry.ref}
                     phx-value-field-name="recipe_video"
-                    class="text-red-500"
+                    class="text-red-500 ml-2 flex-shrink-0"
                   >
                     &times;
                   </button>
@@ -109,8 +116,8 @@
           </div>
 
           <%= if @live_action == :edit do %>
-            <div class="border-l pl-8">
-              <h3 class="text-lg font-medium text-gray-900 mb-4">Current Video</h3>
+            <div class="lg:border-l lg:pl-8 mt-6 lg:mt-0">
+              <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-4">Current Video</h3>
               <p class="text-sm text-gray-500 mb-2"><%= @saved_video_title %></p>
               <div class="rounded-lg overflow-hidden shadow-lg">
                 <video controls class="w-full aspect-video">
@@ -122,14 +129,14 @@
         </div>
       </div>
       <!-- Images Section -->
-      <div class="bg-white rounded-xl border p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-6">Recipe Images</h2>
-        <div class="grid grid-cols-2 gap-8">
+      <div class="bg-white rounded-xl border p-4 sm:p-6">
+        <h2 class="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-6">Recipe Images</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           <!-- Upload Section -->
-          <div class="space-y-8">
+          <div class="space-y-6 sm:space-y-8">
             <!-- Primary Image -->
             <div>
-              <h3 class="text-lg font-medium text-gray-900 mb-4">Primary Image</h3>
+              <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-4">Primary Image</h3>
               <.live_file_input
                 upload={@uploads.recipe_primary_image}
                 required={@live_action == :new}
@@ -139,13 +146,15 @@
                 <div class="mt-4 bg-gray-50 rounded-lg p-4">
                   <.live_img_preview entry={entry} class="w-full h-48 object-cover rounded-lg" />
                   <div class="mt-2 flex justify-between items-center">
-                    <span class="text-sm text-gray-500"><%= entry.client_name %></span>
+                    <span class="text-sm text-gray-500 truncate flex-1 mr-2">
+                      <%= entry.client_name %>
+                    </span>
                     <button
                       type="button"
                       phx-click="cancel-upload"
                       phx-value-ref={entry.ref}
                       phx-value-field-name="recipe_primary_image"
-                      class="text-red-500"
+                      class="text-red-500 flex-shrink-0"
                     >
                       &times;
                     </button>
@@ -155,20 +164,24 @@
             </div>
             <!-- Additional Images -->
             <div>
-              <h3 class="text-lg font-medium text-gray-900 mb-4">Additional Images</h3>
+              <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-4">
+                Additional Images
+              </h3>
               <.live_file_input upload={@uploads.recipe_images} />
 
               <%= for entry <- @uploads.recipe_images.entries do %>
                 <div class="mt-4 bg-gray-50 rounded-lg p-4">
                   <.live_img_preview entry={entry} class="w-full h-48 object-cover rounded-lg" />
                   <div class="mt-2 flex justify-between items-center">
-                    <span class="text-sm text-gray-500"><%= entry.client_name %></span>
+                    <span class="text-sm text-gray-500 truncate flex-1 mr-2">
+                      <%= entry.client_name %>
+                    </span>
                     <button
                       type="button"
                       phx-click="cancel-upload"
                       phx-value-ref={entry.ref}
                       phx-value-field-name="recipe_images"
-                      class="text-red-500"
+                      class="text-red-500 flex-shrink-0"
                     >
                       &times;
                     </button>
@@ -179,9 +192,9 @@
           </div>
           <!-- Saved Images Preview -->
           <%= if @live_action == :edit do %>
-            <div class="border-l pl-8">
-              <h3 class="text-lg font-medium text-gray-900 mb-4">Current Images</h3>
-              <div class="grid grid-cols-2 gap-4">
+            <div class="lg:border-l lg:pl-8 mt-6 lg:mt-0">
+              <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-4">Current Images</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <%= for recipe_image <- @saved_images do %>
                   <div class="relative group">
                     <img
@@ -199,7 +212,7 @@
                           type="button"
                           phx-click="remove-recipe-image"
                           phx-value-id={recipe_image.id}
-                          class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                          class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
                         >
                           Delete
                         </button>
@@ -208,7 +221,7 @@
                           type="button"
                           phx-click="add-recipe-image"
                           phx-value-id={recipe_image.id}
-                          class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                          class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-sm"
                         >
                           Add Back
                         </button>
@@ -222,51 +235,60 @@
         </div>
       </div>
       <!-- Cooking Steps -->
-      <div class="bg-white rounded-xl border p-6">
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="text-xl font-semibold text-gray-800">Cooking Steps</h2>
+      <div class="bg-white rounded-xl border p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6 gap-4 sm:gap-0">
+          <h2 class="text-lg sm:text-xl font-semibold text-gray-800">Cooking Steps</h2>
           <button
             type="button"
             phx-click="add-nested"
             phx-value-field-name="cooking_steps"
-            class="inline-flex items-center px-4 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50"
+            class="inline-flex items-center justify-center px-4 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-50 text-sm sm:text-base"
           >
             Add Step
           </button>
         </div>
 
-        <div class="space-y-6">
+        <div class="space-y-4 sm:space-y-6">
           <.inputs_for :let={cs} field={@form[:cooking_steps]}>
-            <div class="grid grid-cols-12 gap-4 items-start bg-gray-50 p-4 rounded-lg">
-              <div class="col-span-2">
-                <.input type="number" field={cs[:step_number]} class="w-full" label="Step Number" />
-              </div>
-              <div class="col-span-8">
-                <.input type="text" field={cs[:instruction]} class="w-full" label="Instruction" />
-              </div>
-              <div class="col-span-1 flex justify-center">
-                <button
-                  type="button"
-                  value={cs.index}
-                  phx-click="remove-nested"
-                  phx-value-field-name="cooking_steps"
-                  class="text-red-500 hover:text-red-700"
-                >
-                  <.icon name="hero-x-mark" class="w-6 h-6" />
-                </button>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
+                <div class="sm:col-span-2">
+                  <.input
+                    type="number"
+                    field={cs[:step_number]}
+                    class="w-full"
+                    label="Step Number"
+                  />
+                </div>
+                <div class="sm:col-span-9">
+                  <.input type="text" field={cs[:instruction]} class="w-full" label="Instruction" />
+                </div>
+                <div class="sm:col-span-1 flex justify-center sm:justify-end">
+                  <button
+                    type="button"
+                    value={cs.index}
+                    phx-click="remove-nested"
+                    phx-value-field-name="cooking_steps"
+                    class="text-red-500 hover:text-red-700 p-2"
+                  >
+                    <.icon name="hero-x-mark" class="w-6 h-6" />
+                  </button>
+                </div>
               </div>
             </div>
           </.inputs_for>
         </div>
       </div>
       <!-- Tags and Ingredients Section -->
-      <div class="bg-white rounded-xl border p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-6">Recipe Details</h2>
+      <div class="bg-white rounded-xl border p-4 sm:p-6">
+        <h2 class="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-6">
+          Recipe Details
+        </h2>
 
-        <div class="grid grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           <!-- Tags Selection -->
           <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900">Tags</h3>
+            <h3 class="text-base sm:text-lg font-medium text-gray-900">Tags</h3>
             <div class="relative">
               <.multi_select
                 id="tags"
@@ -287,7 +309,7 @@
           </div>
           <!-- Ingredients Selection -->
           <div class="space-y-4">
-            <h3 class="text-lg font-medium text-gray-900">Ingredients</h3>
+            <h3 class="text-base sm:text-lg font-medium text-gray-900">Ingredients</h3>
             <div class="relative">
               <.multi_select
                 id="ingredients"
@@ -311,11 +333,11 @@
         </div>
       </div>
       <!-- Submit Button -->
-      <div class="mt-8">
+      <div class="mt-6 sm:mt-8">
         <button
           type="submit"
           phx-debounce="400"
-          class="phx-submit-loading:opacity-50 w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          class="phx-submit-loading:opacity-50 w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base"
         >
           Save Recipe
         </button>
